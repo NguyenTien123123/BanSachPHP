@@ -75,13 +75,13 @@ $total = $row_total_price['total_price'];
         }
 
         .cart-container {
-            margin-top: 40px;
-            background: white;
+
+            max-width: 1200px;
+            margin: auto;
+            background-color: #fff;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            border-left: 5px solid #20c997;
-            /* Màu xanh ngọc */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .table thead th {
@@ -280,7 +280,7 @@ $total = $row_total_price['total_price'];
                                     <a href="javascript:void(0);" class="btn btn-primary btn-sm update-btn" data-id="<?php echo htmlspecialchars($row['DHID']); ?>">Cập nhật</a>
                                 <?php endif; ?>
                                 <?php if (trim($row['TrangThai']) === 'Completed') : ?>
-                                    <a href="review.php?order_id=<?php echo htmlspecialchars($row['DHID']); ?>" class="btn btn-yellow btn-sm">Đánh giá</a>
+                                    <a href="user_review.php?order_id=<?php echo htmlspecialchars($row['DHID']); ?>" class="btn btn-yellow btn-sm">Đánh giá</a>
                                 <?php endif; ?>
                             </td>
                         </tr>

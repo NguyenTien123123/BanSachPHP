@@ -139,8 +139,10 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
         }
 
         .info-box {
-            flex: 1 1 calc(50% - 20px); /* Two boxes per row with margin */
-            height: 200px; /* Fixed height for uniformity */
+            flex: 1 1 calc(50% - 20px);
+            /* Two boxes per row with margin */
+            height: 200px;
+            /* Fixed height for uniformity */
             border-radius: 8px;
             padding: 20px;
             text-align: center;
@@ -152,11 +154,14 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
             margin: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
-            background-color: #3cb371; /* Default background color */
+            background-color: #3cb371;
+            /* Default background color */
         }
 
-        .info-box.left, .info-box.right {
-            background-color: #3cb371; /* Adjust background color if needed */
+        .info-box.left,
+        .info-box.right {
+            background-color: #3cb371;
+            /* Adjust background color if needed */
         }
 
         .info-box h4 {
@@ -166,8 +171,10 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
 
         @media (max-width: 768px) {
             .info-box {
-                flex: 1 1 100%; /* Full width for each box on smaller screens */
-                height: 150px; /* Adjust height for mobile screens */
+                flex: 1 1 100%;
+                /* Full width for each box on smaller screens */
+                height: 150px;
+                /* Adjust height for mobile screens */
             }
         }
     </style>
@@ -190,7 +197,7 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
                             <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_reviews.php">Quản lý Đánh giá</a>
+                            <a class="nav-link" href="manager_rattings.php">Quản lý Đánh giá</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
