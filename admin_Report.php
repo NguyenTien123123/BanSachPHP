@@ -74,6 +74,10 @@ $sql = "SELECT COUNT(*) AS count FROM donhang WHERE TrangThai = 'Cancelled' AND 
 $result = $conn->query($sql);
 $count_cancelled = $result->fetch_assoc()['count'];
 
+$sql = "SELECT COUNT(*) AS count FROM donhang WHERE TrangThai = 'RefundedSuccessfully' AND NgayDatHang BETWEEN '$start_date' AND '$end_date'";
+$result = $conn->query($sql);
+$count_refundedSuccessfully = $result->fetch_assoc()['count'];
+
 // Tính tổng doanh thu đã nhận và ước tính
 $sql = "SELECT SUM(TongTien) AS revenue FROM donhang WHERE TrangThai = 'Completed' AND NgayDatHang BETWEEN '$start_date' AND '$end_date'";
 $result = $conn->query($sql);
@@ -89,6 +93,7 @@ $order_data = [
     'Pending' => $count_pending,
     'Processing' => $count_processing,
     'Cancelled' => $count_cancelled,
+    'RefundedSuccessfully' => $count_refundedSuccessfully,
 ];
 
 $periods_json = json_encode($periods); // Đảm bảo mảng chứa chuỗi
@@ -371,14 +376,13 @@ $revenues_json = json_encode($revenues, JSON_NUMERIC_CHECK); // Đảm bảo s�
         const orderChart = new Chart(ctxOrder, {
             type: 'doughnut',
             data: {
-                labels: ['Đã giao', 'Chờ duyệt', 'Đang giao', 'Đã hủy'],
+                labels: ['Đã giao', 'Chờ duyệt', 'Đang giao', 'Đã hủy', 'Hoàn tiền'],
                 datasets: [{
                     label: 'Thống kê đơn hàng',
-                    data: [<?php echo $order_data['Completed']; ?>, <?php echo $order_data['Pending']; ?>, <?php echo $order_data['Processing']; ?>, <?php echo $order_data['Cancelled']; ?>],
-                    backgroundColor: ['#4CAF50', '#FFC107', ' #434F90', '#F44336'],
+                    data: [<?php echo $order_data['Completed']; ?>, <?php echo $order_data['Pending']; ?>, <?php echo $order_data['Processing']; ?>, <?php echo $order_data['Cancelled']; ?>, <?php echo $order_data['RefundedSuccessfully']; ?>],
+                    backgroundColor: ['#4CAF50', '#FFC107', '#2196F3', '#F44336', '#FF5722'], // Adjusted colors
                 }]
             },
-
             options: {
                 responsive: true,
                 plugins: {
