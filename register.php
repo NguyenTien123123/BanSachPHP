@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin: 0;
             padding: 0;
         }
+
         .register-container {
             max-width: 450px;
             margin: 60px auto;
@@ -60,45 +62,54 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             border-left: 5px solid #66cdaa;
         }
+
         .register-container h2 {
             text-align: center;
             margin-bottom: 30px;
             color: #4682b4;
             font-weight: bold;
         }
+
         .form-group label {
             font-weight: bold;
             color: #4682b4;
         }
+
         .form-control {
             border: 2px solid #b0c4de;
             border-radius: 30px;
             padding-left: 20px;
         }
+
         .btn-custom {
             border-radius: 30px;
             padding: 10px;
             font-size: 16px;
             font-weight: bold;
         }
+
         .btn-primary {
             background-color: #66cdaa;
             border: none;
             color: #fff;
         }
+
         .btn-primary:hover {
             background-color: #3cb371;
         }
+
         .btn-secondary {
             background-color: #ffcc99;
             border: none;
             color: #000;
         }
+
         .btn-secondary:hover {
             background-color: #ffb366;
         }
     </style>
 </head>
+
 <body>
     <div class="register-container">
         <?php if ($message) : ?>
@@ -130,4 +141,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
