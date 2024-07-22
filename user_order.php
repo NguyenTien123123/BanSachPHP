@@ -27,7 +27,6 @@ if (!$stmt_all_orders->execute()) {
 }
 
 $result_all_orders = $stmt_all_orders->get_result();
-
 if (!$result_all_orders) {
     die('Lỗi lấy kết quả: ' . $stmt_all_orders->error);
 }
@@ -75,7 +74,6 @@ $total = $row_total_price['total_price'];
         }
 
         .cart-container {
-
             max-width: 1200px;
             margin: auto;
             background-color: #fff;
@@ -86,13 +84,12 @@ $total = $row_total_price['total_price'];
 
         .table thead th {
             background-color: #20c997;
-            /* Màu xanh ngọc */
             color: white;
         }
 
-        .btn-custom {
+        .btn-custom,
+        .home-button {
             background-color: #20c997;
-            /* Màu xanh ngọc */
             color: white;
             border: none;
             padding: 10px 20px;
@@ -105,7 +102,8 @@ $total = $row_total_price['total_price'];
             transition: background-color 0.3s;
         }
 
-        .btn-custom:hover {
+        .btn-custom:hover,
+        .home-button:hover {
             background-color: #17a2b8;
         }
 
@@ -125,40 +123,12 @@ $total = $row_total_price['total_price'];
             color: white;
         }
 
-        .home-button {
-            background-color: #20c997;
-            /* Màu xanh ngọc */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin-right: 10px;
-            transition: background-color 0.3s;
-        }
-
-        .home-button:hover {
-            background-color: #17a2b8;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-        }
-
         .table-responsive {
             overflow-x: auto;
-            /* Thêm thanh cuộn ngang nếu bảng quá rộng */
         }
 
         .table {
             width: 100%;
-            /* Đảm bảo bảng chiếm toàn bộ chiều rộng của khung chứa */
             margin-bottom: 1rem;
             color: #212529;
         }
@@ -170,7 +140,6 @@ $total = $row_total_price['total_price'];
         .table th,
         .table td {
             white-space: nowrap;
-            /* Ngăn chặn việc cắt bớt nội dung */
         }
 
         .editable {
@@ -187,7 +156,6 @@ $total = $row_total_price['total_price'];
 
         .btn-yellow {
             background-color: #f1c40f;
-            /* Màu vàng */
             color: white;
             border: none;
             padding: 5px 5px;
@@ -203,20 +171,26 @@ $total = $row_total_price['total_price'];
         .btn-yellow:hover {
             background-color: #d4ac0d;
         }
-    </style>
-    <style>
+
         /* Thay đổi màu sắc thông báo thành công */
         .toast-success {
             background-color: #28a745 !important;
-            /* Màu xanh lá cây */
             color: white !important;
         }
 
         /* Thay đổi màu sắc thông báo thất bại */
         .toast-error {
             background-color: #dc3545 !important;
-            /* Màu đỏ */
             color: white !important;
+        }
+
+        .cart-summary p {
+            text-align: right;
+            /* Align text to the right */
+            font-weight: bold;
+            /* Make text bold */
+            margin-top: 20px;
+            /* Add margin for spacing if needed */
         }
     </style>
 </head>
@@ -277,7 +251,8 @@ $total = $row_total_price['total_price'];
                             <td>
                                 <?php if (trim($row['TrangThai']) === 'Pending') : ?>
                                     <a href="javascript:void(0);" class="btn btn-primary btn-sm edit-btn" data-id="<?php echo htmlspecialchars($row['DHID']); ?>">Sửa</a>
-                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm update-btn" data-id="<?php echo htmlspecialchars($row['DHID']); ?>">Cập nhật</a>
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm update-btn hidden" data-id="<?php echo htmlspecialchars($row['DHID']); ?>">Cập nhật</a>
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm cancel-btn" data-id="<?php echo htmlspecialchars($row['DHID']); ?>">Hủy</a>
                                 <?php endif; ?>
                                 <?php if (trim($row['TrangThai']) === 'Completed') : ?>
                                     <a href="user_review.php?order_id=<?php echo htmlspecialchars($row['DHID']); ?>" class="btn btn-yellow btn-sm">Đánh giá</a>
@@ -286,7 +261,6 @@ $total = $row_total_price['total_price'];
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
-
             </table>
         </div>
 
@@ -297,6 +271,7 @@ $total = $row_total_price['total_price'];
             </div>
         </div>
     </div>
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
@@ -309,7 +284,6 @@ $total = $row_total_price['total_price'];
             // Khi nhấn nút "Sửa", tự động kích hoạt chỉnh sửa ô địa chỉ
             $('.edit-btn').on('click', function() {
                 var $this = $(this);
-                var orderID = $this.data('id');
                 var $row = $this.closest('tr');
 
                 // Hiển thị ô nhập liệu và ẩn ô hiển thị địa chỉ
@@ -326,7 +300,7 @@ $total = $row_total_price['total_price'];
                 var newAddress = $this.closest('tr').find('input').val().trim();
 
                 $.ajax({
-                    url: 'update_cart.php',
+                    url: 'update_order_user.php',
                     type: 'POST',
                     data: {
                         id: orderID,
@@ -338,7 +312,7 @@ $total = $row_total_price['total_price'];
                             toastr.success('Cập nhật địa chỉ giao hàng thành công.', '', {
                                 closeButton: true,
                                 progressBar: true,
-                                toastClass: 'toast toast-success' // Sử dụng lớp tùy chỉnh cho thông báo thành công
+                                toastClass: 'toast toast-success'
                             });
                             $this.closest('tr').find('.editable').text(newAddress).removeClass('hidden');
                             $this.closest('tr').find('input').addClass('hidden');
@@ -353,31 +327,70 @@ $total = $row_total_price['total_price'];
                             toastr.error('Lỗi: ' + trimmedResponse.substring(6), '', {
                                 closeButton: true,
                                 progressBar: true,
-                                toastClass: 'toast toast-error' // Sử dụng lớp tùy chỉnh cho thông báo thất bại
+                                toastClass: 'toast toast-error'
                             });
                             setTimeout(function() {
                                 window.location.href = 'user_order.php'; // Tải lại trang user_order.php
-                            }, 2000); // Đợi 2 giây trước khi tải lại trang
+                            }, 2000);
                         } else {
-                            toastr.success('Cập nhật địa chỉ giao hàng thành công.', '', {
+                            toastr.error('Có lỗi xảy ra.', '', {
                                 closeButton: true,
                                 progressBar: true,
-                                toastClass: 'toast toast-success' // Sử dụng lớp tùy chỉnh cho thông báo thất bại
+                                toastClass: 'toast toast-error'
                             });
                             setTimeout(function() {
                                 window.location.href = 'user_order.php'; // Tải lại trang user_order.php
-                            }, 2000); // Đợi 2 giây trước khi tải lại trang
+                            }, 2000);
                         }
                     },
                     error: function() {
                         toastr.error('Có lỗi xảy ra.', '', {
                             closeButton: true,
                             progressBar: true,
-                            toastClass: 'toast toast-error' // Sử dụng lớp tùy chỉnh cho thông báo thất bại
+                            toastClass: 'toast toast-error'
                         });
                         setTimeout(function() {
                             window.location.href = 'user_order.php'; // Tải lại trang user_order.php
-                        }, 2000); // Đợi 2 giây trước khi tải lại trang
+                        }, 2000);
+                    }
+                });
+            });
+
+            $(document).on('click', '.cancel-btn', function() {
+                var $this = $(this);
+                var orderID = $this.data('id');
+
+                $.ajax({
+                    url: 'cancel_order.php',
+                    type: 'POST',
+                    data: {
+                        id: orderID
+                    },
+                    success: function(response) {
+                        var trimmedResponse = response.trim();
+                        if (trimmedResponse === 'success') {
+                            toastr.success('Đơn hàng đã được hủy.', '', {
+                                closeButton: true,
+                                progressBar: true,
+                                toastClass: 'toast toast-success'
+                            });
+                            setTimeout(function() {
+                                window.location.reload(); // Tải lại trang user_order.php
+                            }, 2000); // Sau 2 giây
+                        } else {
+                            toastr.error('Có lỗi xảy ra khi hủy đơn hàng.', '', {
+                                closeButton: true,
+                                progressBar: true,
+                                toastClass: 'toast toast-error'
+                            });
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Có lỗi xảy ra.', '', {
+                            closeButton: true,
+                            progressBar: true,
+                            toastClass: 'toast toast-error'
+                        });
                     }
                 });
             });

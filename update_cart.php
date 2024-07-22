@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php'; // Đảm bảo rằng file này chứa thông tin kết nối đến CSDL
+include 'db_connect.php'; // Ensure this file contains your DB connection
 
 if (!isset($_SESSION['userid'])) {
     echo "Not logged in";
@@ -8,9 +8,14 @@ if (!isset($_SESSION['userid'])) {
 }
 
 $userID = $_SESSION['userid'];
-$action = $_POST['action'];
-$bookId = $_POST['bookId'];
-$quantity = isset($_POST['quantity']) ? $_POST['quantity'] : 1;
+$action = isset($_POST['action']) ? $_POST['action'] : '';
+$bookId = isset($_POST['bookId']) ? (int)$_POST['bookId'] : 0;
+$quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
+
+if ($bookId <= 0 || $quantity < 0) {
+    echo "Invalid input";
+    exit;
+}
 
 switch ($action) {
     case 'update':
@@ -18,22 +23,54 @@ switch ($action) {
             echo "Quantity must be at least 1";
             exit;
         }
-        $sql = "UPDATE giohang SET SoLuong = ? WHERE ID = ? AND SachID = ?";
-        $stmt = $conn->prepare($sql);
+
+        // Check if the item exists
+        $checkSql = "SELECT * FROM giohang WHERE ID = ? AND SachID = ?";
+        $stmt = $conn->prepare($checkSql);
+        $stmt->bind_param("ii", $userID, $bookId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            echo "Item not found in cart";
+            $stmt->close();
+            exit;
+        }
+
+        // Update item quantity
+        $updateSql = "UPDATE giohang SET SoLuong = ? WHERE ID = ? AND SachID = ?";
+        $stmt = $conn->prepare($updateSql);
         $stmt->bind_param("iii", $quantity, $userID, $bookId);
         $stmt->execute();
+
         if ($stmt->affected_rows > 0) {
-            echo $stmt->insert_id;
+            echo "Quantity updated";
         } else {
             echo "No changes made";
         }
         $stmt->close();
         break;
+
     case 'delete':
-        $sql = "DELETE FROM giohang WHERE ID = ? AND SachID = ?";
-        $stmt = $conn->prepare($sql);
+        // Check if the item exists
+        $checkSql = "SELECT * FROM giohang WHERE ID = ? AND SachID = ?";
+        $stmt = $conn->prepare($checkSql);
         $stmt->bind_param("ii", $userID, $bookId);
         $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            echo "Item not found in cart";
+            $stmt->close();
+            exit;
+        }
+
+        // Delete item
+        $deleteSql = "DELETE FROM giohang WHERE ID = ? AND SachID = ?";
+        $stmt = $conn->prepare($deleteSql);
+        $stmt->bind_param("ii", $userID, $bookId);
+        $stmt->execute();
+
         if ($stmt->affected_rows > 0) {
             echo "Deleted";
         } else {
@@ -41,46 +78,9 @@ switch ($action) {
         }
         $stmt->close();
         break;
+
     default:
         echo "Invalid action";
 }
 
 $conn->close();
-?>
-
-<?php
-session_start();
-include 'db_connect.php'; // Ensure the database connection is included
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_SESSION['userid'])) {
-        echo 'error: not_logged_in'; // Specific error message
-        exit;
-    }
-
-    $orderID = $_POST['id'];
-    $newAddress = $_POST['address'];
-    $userID = $_SESSION['userid'];
-
-    // Update the delivery address
-    $sql = "UPDATE donhang SET DiaChiGiaoHang = ? WHERE DHID = ? AND ID = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sii", $newAddress, $orderID, $userID);
-
-    if ($stmt->execute()) {
-        if ($stmt->affected_rows > 0) {
-            echo 'success'; // Send 'success' if the update was successful
-        } else {
-            echo 'no_change'; // If no rows were affected, send 'no_change'
-        }
-    } else {
-        echo 'error: ' . $stmt->error; // Provide detailed error message
-    }
-
-    $stmt->close();
-} else {
-    echo 'error: invalid_request'; // Provide more detail about the error
-}
-
-$conn->close();
-?>
