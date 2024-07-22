@@ -1,0 +1,53 @@
+<?php
+include 'db_connect.php';
+$user_id = $_GET['user_id'];
+
+if ($user_id) {
+    // 1. Xóa các bản ghi trong bảng giohang
+    $deleteCartSql = "DELETE FROM giohang WHERE ID = ?";
+    $deleteCartStmt = $conn->prepare($deleteCartSql);
+    $deleteCartStmt->bind_param("i", $user_id);
+    if (!$deleteCartStmt->execute()) {
+        echo "Lỗi khi xóa giỏ hàng: " . $deleteCartStmt->error;
+    }
+    $deleteCartStmt->close();
+
+    // 2. Xóa chi tiết đơn hàng
+    $deleteOrderDetailsSql = "DELETE FROM chitietdonhang WHERE DHID IN (SELECT DHID FROM donhang WHERE ID = ?)";
+    $deleteOrderDetailsStmt = $conn->prepare($deleteOrderDetailsSql);
+    $deleteOrderDetailsStmt->bind_param("i", $user_id);
+    if (!$deleteOrderDetailsStmt->execute()) {
+        echo "Lỗi khi xóa chi tiết đơn hàng: " . $deleteOrderDetailsStmt->error;
+    }
+    $deleteOrderDetailsStmt->close();
+
+    // 3. Xóa đơn hàng
+    $deleteOrdersSql = "DELETE FROM donhang WHERE ID = ?";
+    $deleteOrdersStmt = $conn->prepare($deleteOrdersSql);
+    $deleteOrdersStmt->bind_param("i", $user_id);
+    if (!$deleteOrdersStmt->execute()) {
+        echo "Lỗi khi xóa đơn hàng: " . $deleteOrdersStmt->error;
+    }
+    $deleteOrdersStmt->close();
+
+    // 4. Xóa ratings liên quan đến người dùng
+    $deleteRatingsSql = "DELETE FROM ratings WHERE ID = ?";
+    $deleteRatingsStmt = $conn->prepare($deleteRatingsSql);
+    $deleteRatingsStmt->bind_param("i", $user_id);
+    if (!$deleteRatingsStmt->execute()) {
+        echo "Lỗi khi xóa ratings: " . $deleteRatingsStmt->error;
+    }
+    $deleteRatingsStmt->close();
+
+    // 5. Xóa người dùng
+    $sql = "DELETE FROM nguoidung WHERE ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    if (!$stmt->execute()) {
+        echo "Lỗi khi xóa người dùng: " . $stmt->error;
+    }
+    $stmt->close();
+}
+
+header("Location: manage_users.php");
+exit();

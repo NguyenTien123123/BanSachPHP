@@ -1,0 +1,490 @@
+/* Reset mặc định */
+body {
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: #f8f9fa;
+    /* Màu nền xám nhạt */
+}
+
+/* ----------------HEADER------------------------- */
+
+/* Thay đổi màu nền của thanh điều hướng */
+.navbar {
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    /* Màu gradient xanh dương đậm */
+    padding: 15px 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Thay đổi màu sắc và kích thước logo */
+.navbar-brand {
+    color: #fff;
+    font-size: 26px;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.navbar-brand:hover {
+    color: #ffeb3b;
+    /* Màu vàng khi hover */
+}
+
+/* Thay đổi màu sắc và kích thước các liên kết trong thanh điều hướng */
+.nav-link {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 10px;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+/* Hiệu ứng hover cho các liên kết */
+.nav-link:hover {
+    color: #5b86e5;
+    /* Màu xanh dương nhạt */
+    background-color: #fff;
+    /* Màu nền trắng */
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+/* Thay đổi màu sắc và kích thước cho các icon */
+.nav-link .fa {
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+/* Thay đổi màu sắc và kích thước cho nút tìm kiếm */
+.navbar .btn-outline-success {
+    color: #fff;
+    border-color: #fff;
+    background-color: transparent;
+    transition: color 0.3s, background-color 0.3s, border-color 0.3s;
+    font-size: 18px;
+    padding: 5px 10px;
+}
+
+/* Hiệu ứng hover cho nút tìm kiếm */
+.navbar .btn-outline-success:hover {
+    color: #000000;
+    background-color: #fff;
+    border-color: #fff;
+}
+
+/* Thay đổi màu sắc và kích thước cho dropdown */
+.nav-item .dropdown-menu {
+    background-color: #5b86e5;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Thay đổi màu sắc và kích thước cho các liên kết trong dropdown */
+.dropdown-item {
+    color: #fff;
+    font-size: 18px;
+    transition: color 0.3s, background-color 0.3s;
+    padding: 10px 20px;
+}
+
+/* Hiệu ứng hover cho các liên kết trong dropdown */
+.dropdown-item:hover {
+    color: #5b86e5;
+    background-color: #fff;
+}
+
+/* Thêm chấm đỏ cho thông báo */
+.notification-dot {
+    height: 12px;
+    width: 12px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    top: 8px;
+    right: 12px;
+}
+
+/* Thay đổi màu sắc và kích thước cho các icon trong thông báo */
+.nav-link .fa-bell,
+.nav-link .fa-shopping-cart,
+.nav-link .fa-user {
+    font-size: 24px;
+    color: #fff;
+    transition: color 0.3s;
+}
+
+.nav-link .fa-bell:hover,
+.nav-link .fa-shopping-cart:hover,
+.nav-link .fa-user:hover {
+    color: #ffeb3b;
+    /* Màu vàng khi hover */
+}
+
+/* Thay đổi màu sắc và kích thước cho thanh tìm kiếm */
+.form-inline input[type="text"] {
+    width: 300px;
+    border-radius: 5px;
+    border: 2px solid #fff;
+    padding: 5px 10px;
+    transition: border-color 0.3s;
+}
+
+.form-inline input[type="text"]:focus {
+    border-color: #5b86e5;
+}
+
+/* Thay đổi màu sắc và kích thước cho nút tìm kiếm */
+.form-inline .btn {
+    background-color: #ffeb3b;
+    color: #5b86e5;
+    border: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.form-inline .btn:hover {
+    background-color: #fff;
+    color: #5b86e5;
+    border: 2px solid #5b86e5;
+}
+
+/* ----------------Gian hàng sách------------------------- */
+.category-menu {
+    display: flex;
+    justify-content: space-around;
+    background-color: #e9ecef;
+    padding: 10px 0;
+}
+
+/* ----------------Sách------------------------- */
+.book-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 20px;
+}
+
+.book-item {
+    margin-bottom: 20px;
+    transition: transform 0.2s;
+}
+
+.book-item:hover {
+    transform: scale(1.05);
+}
+
+.book-item img {
+    width: 100%;
+    height: 200px;
+    /* Chiều cao cố định để đảm bảo tất cả các hình ảnh có cùng kích thước */
+    object-fit: contain;
+    /* Đảm bảo hình ảnh không bị cắt xén */
+}
+
+/* ---------------- ô sách------------------------- */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    width: 100%;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    height: 100%;
+    /* Đặt chiều cao cố định cho card-body */
+    width: 100%;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+    height: 40px;
+    /* Đặt chiều cao cố định cho tiêu đề để đảm bảo tất cả các card đều nhau */
+    overflow: hidden;
+}
+
+.card-text {
+    color: #dc3545;
+    /* Thay đổi màu sắc giá tiền */
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.card .btn-secondary {
+    background-color: #28a745;
+    /* Màu xanh lá cây */
+    color: white;
+    font-weight: bold;
+    border-radius: 20px;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.card:hover .btn-secondary {
+    background-color: #218838;
+    /* Màu xanh lá cây đậm hơn khi hover */
+}
+
+.card:hover .card-img-top {
+    opacity: 0.8;
+    /* Làm mờ hình ảnh khi hover */
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: contain;
+    margin-top: 5%;
+}
+
+a.card-link {
+    color: inherit;
+    /* Giữ màu chữ không đổi */
+    text-decoration: none;
+    /* Loại bỏ gạch chân */
+}
+
+a.card-link:hover {
+    text-decoration: none;
+    /* Loại bỏ gạch chân khi hover */
+}
+
+/* ----------------Lọc sách------------------------- */
+.filter-btn {
+    margin: 5px;
+    font-size: 14px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    color: #000 !important;
+    border: 2px solid #007bff;
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    /* Màu nền gradient */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.filter-btn i {
+    color: #fff !important;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background-color: #007bff;
+    /* Màu xanh đậm */
+    color: white;
+    border-color: #007bff;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Thêm khoảng cách giữa các nút */
+.filter-btn+.filter-btn {
+    margin-left: 10px;
+}
+
+/* Đặt icon vào giữa nút */
+.filter-btn i {
+    margin-right: 8px;
+}
+
+/* Hiệu ứng nổi khi hover */
+.filter-btn:hover {
+    transform: translateY(-2px);
+}
+
+
+/* ----------------FOOTER------------------------- */
+footer {
+    margin-top: 40px;
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    /* Nền gradient */
+    color: #fff;
+    /* Màu chữ trắng */
+}
+
+footer .text-uppercase {
+    font-weight: bold;
+    /* Chữ in đậm */
+    color: #ff9800;
+    /* Màu nổi bật cho tiêu đề */
+}
+
+footer .list-unstyled a {
+    text-decoration: none;
+    /* Bỏ gạch chân */
+    color: #fff;
+    /* Màu chữ trắng */
+    transition: color 0.3s, transform 0.3s;
+    /* Hiệu ứng chuyển màu và dịch chuyển */
+}
+
+footer .list-unstyled a:hover {
+    color: #007bff;
+    /* Màu khi di chuột */
+    transform: translateY(-2px);
+    /* Hiệu ứng di chuyển khi hover */
+}
+
+.footer-bottom {
+    background-color: #007bff;
+    /* Nền xanh đậm */
+    color: #fff;
+    /* Chữ trắng */
+}
+
+.social-icons a {
+    font-size: 1.5rem;
+    /* Kích thước biểu tượng lớn hơn */
+    transition: color 0.3s, transform 0.3s;
+    /* Hiệu ứng chuyển màu và dịch chuyển */
+}
+
+.social-icons a:hover {
+    color: #ff9800;
+    /* Màu khi di chuột cho biểu tượng */
+    transform: translateY(-2px);
+    /* Hiệu ứng di chuyển khi hover */
+}
+
+.text-highlight {
+    color: #ff9800 !important;
+    /* Màu nổi bật cho tiêu đề */
+}
+
+
+
+/* ----------------Thông báo------------------------- */
+.notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+}
+
+.notification.show {
+    display: block;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+.notification.success {
+    background-color: #4CAF50;
+    /* Nền màu xanh cho thông báo thành công */
+    color: white;
+}
+
+.notification.error {
+    background-color: #f44336;
+    /* Nền màu đỏ cho thông báo lỗi */
+    color: white;
+}
+
+@keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+
+    to {
+        top: 80px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        top: 80px;
+        opacity: 1;
+    }
+
+    to {
+        top: 0;
+        opacity: 0;
+    }
+}
+
+/* ---------------- Tùy biến giao diện------------------------- */
+@media (min-width: 1200px) {
+    .book-container .col-xl-2 {
+        flex: 0 0 20%;
+        /* Tăng kích thước của cột */
+        max-width: 20%;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .book-container .col-lg-3 {
+        flex: 0 0 25%;
+        /* Tăng kích thước của cột */
+        max-width: 25%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .book-container .col-md-4 {
+        flex: 0 0 33.3333%;
+        /* Tăng kích thước của cột */
+        max-width: 33.3333%;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .book-container .col-sm-6 {
+        flex: 0 0 50%;
+        /* Tăng kích thước của cột */
+        max-width: 50%;
+    }
+}
+
+/* ---------------- Hiệu Ứng Thông báo------------------------- */
+.notification-popup {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width: 300px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-popup .notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-popup .notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-popup .notification-item:hover {
+    background-color: #f1f1f1;
+}
+
+#notificationPopup {
+    display: none;
+}
+
+#notificationsDropdown:hover+#notificationPopup {
+    display: block;
+}
