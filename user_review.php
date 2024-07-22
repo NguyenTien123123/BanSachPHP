@@ -134,7 +134,7 @@ if ($stmt_order_details) {
         ?>
 
         <?php if ($order) : ?>
-            <form action="review.php?order_id=<?php echo htmlspecialchars($orderID); ?>" method="POST">
+            <form action="user_review.php?order_id=<?php echo htmlspecialchars($orderID); ?>" method="POST">
                 <div class="form-group">
                     <label for="book">Sách:</label>
                     <input type="text" class="form-control" id="book" value="<?php echo htmlspecialchars($order['TenSach']); ?>" disabled>
