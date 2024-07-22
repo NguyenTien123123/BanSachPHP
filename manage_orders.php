@@ -26,26 +26,6 @@ if (isset($_POST['action'])) {
                 $stmt->execute();
             }
             break;
-
-            // case "delete":
-            //     $sql = "DELETE FROM donhang WHERE DHID = ?";
-            //     $stmt = $conn->prepare($sql);
-            //     $stmt->bind_param("i", $orderID);
-            //     $stmt->execute();
-            //     break;
-        case "delete":
-            // Delete related rows from chitietdonhang first
-            $sql = "DELETE FROM chitietdonhang WHERE DHID = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $orderID);
-            $stmt->execute();
-
-            // Now delete from donhang
-            $sql = "DELETE FROM donhang WHERE DHID = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $orderID);
-            $stmt->execute();
-            break;
     }
     // Chuyển hướng để tránh re-post khi refresh
     header("Location: manage_orders.php");
@@ -65,7 +45,7 @@ if (isset($_POST['status_filter'])) {
     $status_filter = $_POST['status_filter'];
 }
 
-$query = "SELECT DHID, TrangThai, NgayDatHang, TongTien FROM donhang WHERE 1";
+$query = "SELECT DHID, TrangThai, NgayDatHang, TongTien, PhuongThucThanhToan FROM donhang WHERE 1";
 
 if ($date_filter_start && $date_filter_end) {
     $query .= " AND DATE(NgayDatHang) BETWEEN '$date_filter_start' AND '$date_filter_end'";
@@ -149,16 +129,17 @@ $result = $conn->query($query);
         <button class="btn btn-primary" onclick="window.location.href='admin_dashboard.php'">Quay lại Dashboard</button>
         <form method="post" class="form-inline mb-3">
             <label for="filter_date_start" class="mr-2">Từ ngày:</label>
-            <input type="date" id="filter_date_start" name="filter_date_start" class="form-control mr-2" value="<?php echo $date_filter_start; ?>">
+            <input type="date" id="filter_date_start" name="filter_date_start" class="form-control mr-2" value="<?php echo htmlspecialchars($date_filter_start); ?>">
             <label for="filter_date_end" class="mr-2">Đến ngày:</label>
-            <input type="date" id="filter_date_end" name="filter_date_end" class="form-control mr-2" value="<?php echo $date_filter_end; ?>">
+            <input type="date" id="filter_date_end" name="filter_date_end" class="form-control mr-2" value="<?php echo htmlspecialchars($date_filter_end); ?>">
             <label for="status_filter" class="mr-2">Trạng thái:</label>
             <select id="status_filter" name="status_filter" class="form-control mr-2">
                 <option value="">Tất cả</option>
                 <option value="Pending" <?php echo $status_filter == 'Pending' ? 'selected' : ''; ?>>Pending</option>
-                <option value="Processing" <?php echo $status_filter == 'Pending' ? 'selected' : ''; ?>>Processing</option>
+                <option value="Processing" <?php echo $status_filter == 'Processing' ? 'selected' : ''; ?>>Processing</option>
                 <option value="Completed" <?php echo $status_filter == 'Completed' ? 'selected' : ''; ?>>Completed</option>
                 <option value="Cancelled" <?php echo $status_filter == 'Cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                <option value="RefundedSuccessfully" <?php echo $status_filter == 'RefundedSuccessfully' ? 'selected' : ''; ?>>RefundedSuccessfully</option>
             </select>
             <button type="submit" class="btn btn-primary">Lọc</button>
         </form>
@@ -169,6 +150,7 @@ $result = $conn->query($query);
                         <th>ID Đơn Hàng</th>
                         <th>Ngày Đặt Hàng</th>
                         <th>Tổng Tiền</th>
+                        <th>Thanh Toán</th>
                         <th>Trạng Thái</th>
                         <th>Thao Tác</th>
                     </tr>
@@ -176,27 +158,24 @@ $result = $conn->query($query);
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) : ?>
                         <tr>
-                            <td><?php echo $row['DHID']; ?></td>
+                            <td><?php echo htmlspecialchars($row['DHID']); ?></td>
                             <td><?php echo date("d-m-Y", strtotime($row['NgayDatHang'])); ?></td>
                             <td><?php echo number_format($row['TongTien'], 2); ?> VND</td>
-                            <td><?php echo $row['TrangThai']; ?></td>
+                            <td><?php echo isset($row['PhuongThucThanhToan']) ? htmlspecialchars($row['PhuongThucThanhToan']) : 'N/A'; ?></td>
+                            <td><?php echo htmlspecialchars($row['TrangThai']); ?></td>
                             <td>
-                                <a href="order_details.php?orderID=<?php echo $row['DHID']; ?>" class="btn btn-info btn-sm">Xem Chi Tiết</a>
+                                <a href="order_details.php?orderID=<?php echo htmlspecialchars($row['DHID']); ?>" class="btn btn-info btn-sm">Xem Chi Tiết</a>
                                 <form action="manage_orders.php" method="post" class="d-inline">
-                                    <input type="hidden" name="orderID" value="<?php echo $row['DHID']; ?>">
+                                    <input type="hidden" name="orderID" value="<?php echo htmlspecialchars($row['DHID']); ?>">
                                     <input type="hidden" name="action" value="update">
                                     <select name="status" class="form-control form-control-sm d-inline" style="width: auto;">
                                         <option value="Pending" <?php echo $row['TrangThai'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
                                         <option value="Processing" <?php echo $row['TrangThai'] == 'Processing' ? 'selected' : ''; ?>>Processing</option>
                                         <option value="Completed" <?php echo $row['TrangThai'] == 'Completed' ? 'selected' : ''; ?>>Completed</option>
-                                        <option value="Cancelled" <?php echo $row['TrangThai'] == 'Cancelled' ? 'selected' : ''; ?>>Cancelledy</option>
+                                        <option value="Cancelled" <?php echo $row['TrangThai'] == 'Cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                                        <option value="RefundedSuccessfully" <?php echo $row['TrangThai'] == 'RefundedSuccessfully' ? 'selected' : ''; ?>>RefundedSuccessfully</option>
                                     </select>
                                     <button type="submit" class="btn btn-success btn-sm">Cập Nhật</button>
-                                </form>
-                                <form action="manage_orders.php" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sách này?');">
-                                    <input type="hidden" name="orderID" value="<?php echo $row['DHID']; ?>">
-                                    <input type="hidden" name="action" value="delete">
-                                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                                 </form>
                             </td>
                         </tr>
