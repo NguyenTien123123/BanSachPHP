@@ -1,5 +1,5 @@
 <?php
-include 'db_connect.php'; // Đảm bảo bạn đã tạo và có file này để kết nối CSDL
+include 'db_connect.php'; // Ensure this file exists to connect to the database
 
 $searchKeyword = '';
 if (isset($_GET['search'])) {
@@ -23,12 +23,9 @@ if (isset($_POST['delete_admin_id'])) {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $admin_id);
     if (!$stmt->execute()) {
-        echo "Lỗi khi xóa admin: " . $stmt->error;
+        $deleteError = "Lỗi khi xóa admin: " . $stmt->error;
     } else {
-        echo "<script>
-                alert('Đã xóa admin thành công.');
-                window.location.href = 'manage_accountAdmin.php';
-              </script>";
+        $deleteSuccess = "Đã xóa admin thành công.";
     }
     $stmt->close();
 }
@@ -54,6 +51,39 @@ if (isset($_GET['admin_id'])) {
         header('Location: manage_accountAdmin.php');
         exit();
     }
+}
+
+// Tạo tài khoản mới cho bảng accountAdmin
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
+    $username = $_POST['TenDangNhap'];
+    $password = password_hash($_POST['MatKhau'], PASSWORD_DEFAULT); // Mã hóa mật khẩu
+
+    // Kiểm tra xem tên đăng nhập đã tồn tại chưa
+    $checkQuery = "SELECT * FROM accountAdmin WHERE TenDangNhap = ?";
+    $stmt = $conn->prepare($checkQuery);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $createError = "Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.";
+    } else {
+        $sql = "INSERT INTO accountAdmin (TenDangNhap, MatKhau) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $username, $password);
+
+        if ($stmt->execute()) {
+            $createSuccess = "Tạo tài khoản thành công";
+        } else {
+            $createError = "Error: " . $stmt->error;
+        }
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    header('Location: manage_accountAdmin.php?createSuccess=' . urlencode($createSuccess) . '&createError=' . urlencode($createError));
+    exit();
 }
 ?>
 
@@ -119,8 +149,35 @@ if (isset($_GET['admin_id'])) {
         .form-control {
             margin-right: 5px;
         }
+
+        .notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
     </style>
     <script>
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.toggle('error', isError);
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+
         function confirmDelete(adminId) {
             if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
                 document.getElementById('delete-form-' + adminId).submit();
@@ -141,13 +198,18 @@ if (isset($_GET['admin_id'])) {
     <div class="container">
         <h2>Quản Lý Người Dùng</h2>
         <button class="btn btn-primary mb-3" onclick="window.location.href='admin_dashboard.php'">Quay lại Dashboard</button>
-        <button class="btn btn-primary mb-3" onclick="window.location.href='registerAdmin.php'">Tạo</button>
-
         <!-- Form tìm kiếm người dùng -->
         <form class="form-inline mb-3" method="get" action="manage_accountAdmin.php">
             <input class="form-control mr-sm-2" type="search" name="search" placeholder="Tìm kiếm admin" aria-label="Search" value="<?php echo htmlspecialchars($searchKeyword); ?>">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm kiếm</button>
         </form>
+        <form class="form-inline mb-3" method="post" action="manage_accountAdmin.php">
+            <input type="text" class="form-control" name="TenDangNhap" placeholder="Tên đăng nhập" required>
+            <input type="password" class="form-control" name="MatKhau" placeholder="Mật khẩu" required>
+            <button class="btn btn-outline-success" type="submit" name="create_account">Tạo mới</button>
+        </form>
+
+        <div id="notification" class="notification"></div>
 
         <div class="table-container">
             <table class="table table-bordered table-striped">
@@ -187,6 +249,18 @@ if (isset($_GET['admin_id'])) {
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <?php if (isset($_GET['createSuccess']) && $_GET['createSuccess']) : ?>
+        <script>
+            showNotification('<?php echo htmlspecialchars($_GET['createSuccess']); ?>');
+        </script>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['createError']) && $_GET['createError']) : ?>
+        <script>
+            showNotification('<?php echo htmlspecialchars($_GET['createError']); ?>', true);
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

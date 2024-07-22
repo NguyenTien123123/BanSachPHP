@@ -321,7 +321,7 @@ $revenues_json = json_encode($revenues, JSON_NUMERIC_CHECK); // Đảm bảo s�
 
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div class="header">
-                    <h2>Chào Admin</h2>
+                    <h2>Thống kê</h2>
                 </div>
                 <div class="stat-box">
                     <h3>Sách sắp hết hàng</h3>
