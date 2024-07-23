@@ -1,6 +1,10 @@
 <?php
 include 'db_connect.php';
 
+if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
+    header("Location: admin_login.php");
+    exit;
+}
 $editState = false;
 $editPublisher = ['NXBID' => '', 'TenNXB' => '', 'DiaChi' => ''];
 

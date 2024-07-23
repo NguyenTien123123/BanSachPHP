@@ -1,5 +1,11 @@
 <?php
 include 'db_connect.php'; // Kết nối CSDL
+
+if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
+    header("Location: admin_login.php");
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {

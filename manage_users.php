@@ -1,6 +1,10 @@
 <?php
 include 'db_connect.php'; // Ensure you have this file to connect to your database
 
+if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
+    header("Location: admin_login.php");
+    exit;
+}
 $searchKeyword = '';
 if (isset($_GET['search'])) {
     $searchKeyword = $_GET['search'];
