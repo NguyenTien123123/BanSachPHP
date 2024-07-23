@@ -221,21 +221,35 @@ if (isset($_SESSION['userid'])) {
                 <?php
                 if ($results && $results->num_rows > 0) {
                     while ($row = $results->fetch_assoc()) {
+                        $sachID = $row['SachID'];
+
+                        // Truy vấn số sao trung bình từ bảng ratings cho sách hiện tại
+                        $rating_sql = "SELECT AVG(rating) as avg_rating FROM ratings WHERE SachID = ?";
+                        $rating_stmt = $conn->prepare($rating_sql);
+                        $rating_stmt->bind_param("i", $sachID);
+                        $rating_stmt->execute();
+                        $rating_result = $rating_stmt->get_result();
+                        $rating_data = $rating_result->fetch_assoc();
+                        $average_rating = round($rating_data['avg_rating'], 1);
                 ?>
                         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 book-item" data-category="<?= htmlspecialchars($row['TheLoai']) ?>">
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column">
-                                    <a href="book_detail.php?SachID=<?= $row['SachID'] ?>" class="card-link">
+                                    <a href="book_detail.php?SachID=<?= $sachID ?>" class="card-link">
                                         <img src="<?= htmlspecialchars($row['HinhAnh']) ?>" class="card-img-top" alt="<?= htmlspecialchars($row['TenSach']) ?>">
                                         <h5 class="card-title"><?= htmlspecialchars($row['TenSach']) ?></h5>
                                         <p class="card-text"><?= number_format($row['GiaBan']) ?>đ</p>
                                     </a>
-                                    <div class="d-flex align-items-center mt-auto">
-                                        <button class="btn btn-secondary" style="width: 40px; height: 40px;" onclick="event.preventDefault(); addToCart(<?= $row['SachID'] ?>);"><i class="fa fa-shopping-cart"></i></button>
+                                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                                        <button class="btn btn-secondary" style="width: 40px; height: 40px;" onclick="event.preventDefault(); addToCart(<?= $sachID ?>);"><i class="fa fa-shopping-cart"></i></button>
+                                        <div class="rating text-right">
+                                            <p class="average-rating"><?php echo $average_rating; ?> ★</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                 <?php
                     }
                 } else {
@@ -323,6 +337,29 @@ if (isset($_SESSION['userid'])) {
                         .social-links a:last-child {
                             margin-right: 0;
                             /* Loại bỏ khoảng cách cho biểu tượng cuối cùng */
+                        }
+
+                        .card-body {
+                            display: flex;
+                            flex-direction: column;
+                            height: 100%;
+                            /* Đảm bảo rằng card-body có chiều cao đầy đủ */
+                        }
+
+                        .mt-auto {
+                            margin-top: auto;
+                            /* Đẩy các phần tử đến dưới cùng của card-body */
+                        }
+
+                        .rating {
+                            font-size: 1.2rem;
+                            color: #ffcc00;
+                            /* Màu vàng cho sao */
+                        }
+
+                        .average-rating {
+                            margin: 0;
+                            /* Đảm bảo rằng không có khoảng cách không cần thiết */
                         }
                     </style>
 
