@@ -2,11 +2,7 @@
 session_start();
 include 'db_connect.php'; // Kết nối tới CSDL
 
-// Kiểm tra xem admin đã đăng nhập chưa
-if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("Location: admin_login.php");
-    exit;
-}
+
 
 // Lấy danh sách sách sắp hoặc đã hết hàng
 $sql = "SELECT TenSach, SoLuong FROM sach WHERE SoLuong <= 5";

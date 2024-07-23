@@ -1,10 +1,6 @@
 <?php
 include 'db_connect.php';
 
-if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("Location: admin_login.php");
-    exit;
-}
 $editState = false;
 $editPublisher = ['NXBID' => '', 'TenNXB' => '', 'DiaChi' => ''];
 
@@ -87,6 +83,7 @@ $result = $conn->query($query);
             border-left: 5px solid #20c997;
             /* Màu xanh ngọc */
         }
+
         h2 {
             color: #333;
             text-align: center;

@@ -1,10 +1,6 @@
 <?php
 include 'db_connect.php'; // Ensure you have this file to connect to your database
 
-if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("Location: admin_login.php");
-    exit;
-}
 $searchKeyword = '';
 if (isset($_GET['search'])) {
     $searchKeyword = $_GET['search'];
@@ -70,14 +66,18 @@ $result = $conn->query($query);
         .btn {
             margin: 5px;
         }
+
         .form-inline {
             display: flex;
-            justify-content: flex-start; /* Align form to the left */
-            margin-bottom: 20px; /* Add some space below the form */
+            justify-content: flex-start;
+            /* Align form to the left */
+            margin-bottom: 20px;
+            /* Add some space below the form */
         }
 
         .form-control {
-            margin-right: 5px; /* Space between input and button */
+            margin-right: 5px;
+            /* Space between input and button */
         }
     </style>
 </head>

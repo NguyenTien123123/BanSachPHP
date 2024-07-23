@@ -1,10 +1,6 @@
 <?php
 include 'db_connect.php'; // Kết nối CSDL
 
-if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("Location: admin_login.php");
-    exit;
-}
 
 if (isset($_POST['action'])) {
     $orderID = $_POST['orderID'];
@@ -91,6 +87,7 @@ $result = $conn->query($query);
             border-left: 5px solid #20c997;
             /* Màu xanh ngọc */
         }
+
         h2 {
             color: #333;
             text-align: center;
