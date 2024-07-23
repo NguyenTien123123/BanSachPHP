@@ -200,7 +200,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
 <body>
     <div class="container">
         <h2>Quản Lý Người Dùng</h2>
-        <button class="btn btn-primary mb-3" onclick="window.location.href='admin_dashboard.php'">Quay lại Dashboard</button>
+        <button class="btn btn-primary btn-sm" onclick="window.location.href='admin_dashboard.php'">
+            <i class="fas fa-home"></i>
+        </button>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <!-- Form tìm kiếm người dùng -->
         <form class="form-inline mb-3" method="get" action="manage_accountAdmin.php">
             <input class="form-control mr-sm-2" type="search" name="search" placeholder="Tìm kiếm admin" aria-label="Search" value="<?php echo htmlspecialchars($searchKeyword); ?>">

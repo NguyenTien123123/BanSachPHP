@@ -366,12 +366,15 @@ $conn->close();
                     </ul>
                 </div>
             </nav>
-
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div class="header">
                     <h2>Thống kê</h2>
                 </div>
-                <button class="btn btn-primary" onclick="window.location.href='admin_dashboard.php'">Quay lại Dashboard</button>
+                <button class="btn btn-primary btn-sm" onclick="window.location.href='admin_dashboard.php'">
+                    <i class="fas fa-home"></i>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+                </button>
+
                 <div class="stat-box">
                     <h3>Sách bán chạy trong tháng</h3>
                     <ul>

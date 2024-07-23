@@ -128,8 +128,10 @@ $result = $conn->query($query);
 <body>
     <div class="container">
         <h2>Quản Lý Nhà Xuất Bản</h2>
-        <button class="btn btn-primary mb-3" onclick="window.location.href='admin_dashboard.php'">Quay lại Dashboard</button>
-
+        <button class="btn btn-primary btn-sm" onclick="window.location.href='admin_dashboard.php'">
+            <i class="fas fa-home"></i>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        </button>
         <!-- Form tìm kiếm nhà xuất bản -->
         <form class="form-inline" method="get" action="manage_publishers.php">
             <input class="form-control" type="search" name="search" placeholder="Tìm kiếm nhà xuất bản" aria-label="Search" value="<?php echo htmlspecialchars($searchKeyword); ?>">

@@ -121,7 +121,10 @@ $result = $conn->query($query);
 <body>
     <div class="container">
         <h2>Quản Lý Đánh Giá</h2>
-        <button class="btn btn-primary" onclick="window.location.href='admin_dashboard.php'">Quay lại Dashboard</button>
+        <button class="btn btn-primary btn-sm" onclick="window.location.href='admin_dashboard.php'">
+            <i class="fas fa-home"></i>
+        </button>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <form method="post" class="form-inline mb-3">
             <label for="filter_date_start" class="mr-2">Từ ngày:</label>
             <input type="date" id="filter_date_start" name="filter_date_start" class="form-control mr-2" value="<?php echo htmlspecialchars($date_filter_start); ?>">

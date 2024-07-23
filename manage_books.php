@@ -219,8 +219,10 @@ if (isset($_GET['search'])) {
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4">
-                <!-- Nút quay lại Dashboard -->
-                <button class="btn btn-primary mb-3" onclick="window.location.href='admin_dashboard.php'">Quay lại Dashboard</button>
+                <button class="btn btn-primary btn-sm" onclick="window.location.href='admin_dashboard.php'">
+                    <i class="fas fa-home"></i>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+                </button>
                 <!-- Form tìm kiếm sách -->
                 <div class="search-bar">
                     <form class="form-inline" method="get" action="manage_books.php">
