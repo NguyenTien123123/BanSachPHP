@@ -19,8 +19,10 @@ if (!$sach) {
     exit();
 }
 
-// Truy vấn số sao trung bình từ bảng ratings
-$rating_sql = "SELECT AVG(rating) as avg_rating FROM ratings WHERE SachID = ?";
+// Truy vấn số sao trung bình từ bảng ratings chỉ với các đánh giá đã được phê duyệt
+$rating_sql = "SELECT AVG(r.rating) as avg_rating 
+               FROM ratings r 
+               WHERE r.SachID = ? AND r.status = 'Approved'";
 $rating_stmt = $conn->prepare($rating_sql);
 $rating_stmt->bind_param("i", $sachID);
 $rating_stmt->execute();

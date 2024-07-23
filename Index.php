@@ -223,14 +223,17 @@ if (isset($_SESSION['userid'])) {
                     while ($row = $results->fetch_assoc()) {
                         $sachID = $row['SachID'];
 
-                        // Truy vấn số sao trung bình từ bảng ratings cho sách hiện tại
-                        $rating_sql = "SELECT AVG(rating) as avg_rating FROM ratings WHERE SachID = ?";
+                        // Truy vấn số sao trung bình từ bảng ratings chỉ với các đánh giá đã được phê duyệt
+                        $rating_sql = "SELECT AVG(r.rating) as avg_rating 
+FROM ratings r 
+WHERE r.SachID = ? AND r.status = 'Approved'";
                         $rating_stmt = $conn->prepare($rating_sql);
                         $rating_stmt->bind_param("i", $sachID);
                         $rating_stmt->execute();
                         $rating_result = $rating_stmt->get_result();
                         $rating_data = $rating_result->fetch_assoc();
                         $average_rating = round($rating_data['avg_rating'], 1);
+
                 ?>
                         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 book-item" data-category="<?= htmlspecialchars($row['TheLoai']) ?>">
                             <div class="card h-100">
