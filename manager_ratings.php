@@ -159,17 +159,24 @@ $result = $conn->query($query);
                                 <form action="manager_ratings.php" method="post" class="d-inline">
                                     <input type="hidden" name="ratingID" value="<?php echo htmlspecialchars($row['id_rat']); ?>">
                                     <input type="hidden" name="action" value="update">
-                                    <select name="status" class="form-control form-control-sm d-inline" style="width: auto;">
-                                        <option value="Pending" <?php echo $row['status'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
-                                        <option value="Approved" <?php echo $row['status'] == 'Approved' ? 'selected' : ''; ?>>Approved</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-success btn-sm">Cập nhật</button>
+                                    <?php if ($row['status'] != 'Approved') : ?>
+                                        <select name="status" class="form-control form-control-sm d-inline" style="width: auto;">
+                                            <option value="Pending" <?php echo $row['status'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
+                                            <option value="Approved" <?php echo $row['status'] == 'Approved' ? 'selected' : ''; ?>>Approved</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-success btn-sm">Duyệt</button>
+                                    <?php else : ?>
+                                        <select name="status" class="form-control form-control-sm d-inline" style="width: auto;" disabled>
+                                            <option value="Pending" <?php echo $row['status'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
+                                            <option value="Approved" <?php echo $row['status'] == 'Approved' ? 'selected' : ''; ?>>Approved</option>
+                                        </select>
+                                        <!-- <button type="submit" class="btn btn-success btn-sm" disabled>Duyệt</button> -->
+                                    <?php endif; ?>
                                 </form>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
-            </table>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

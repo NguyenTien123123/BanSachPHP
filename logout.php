@@ -1,10 +1,10 @@
 <?php
-session_start(); // Bắt đầu phiên làm việc
+session_start();
 
-// Xóa tất cả biến session
+// Xóa tất cả các biến session
 $_SESSION = array();
 
-// Nếu muốn hủy session, hủy cả cookie session.
+// Nếu sử dụng cookie để lưu trữ session, hãy xóa cookie đó
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(
@@ -18,9 +18,9 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// Cuối cùng, hủy bỏ phiên
+// Hủy session
 session_destroy();
 
-// Chuyển hướng về trang đăng nhập, hoặc trang chủ
-header("Location: login.php");
-exit;
+// Chuyển hướng về trang Index.php
+header("Location: Index.php");
+exit();

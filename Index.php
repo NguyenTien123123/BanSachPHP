@@ -134,12 +134,6 @@ if (isset($_SESSION['userid'])) {
                             <a class="nav-link" href="login.php"><i class="fa fa-user"></i> Đăng nhập/Đăng ký</a>
                         <?php endif; ?>
                     </li>
-                    <!-- <li class="nav-item">
-                    <select class="form-control">
-                        <option value="vie">VIE</option>
-                        <option value="eng">ENG</option>
-                    </select>
-                </li> -->
                     <li class="nav-item">
                         <select class="form-control small-select">
                             <option value="vie">VIE</option>
@@ -224,9 +218,7 @@ if (isset($_SESSION['userid'])) {
                         $sachID = $row['SachID'];
 
                         // Truy vấn số sao trung bình từ bảng ratings chỉ với các đánh giá đã được phê duyệt
-                        $rating_sql = "SELECT AVG(r.rating) as avg_rating 
-FROM ratings r 
-WHERE r.SachID = ? AND r.status = 'Approved'";
+                        $rating_sql = "SELECT AVG(r.rating) as avg_rating FROM ratings r WHERE r.SachID = ? AND r.status = 'Approved'";
                         $rating_stmt = $conn->prepare($rating_sql);
                         $rating_stmt->bind_param("i", $sachID);
                         $rating_stmt->execute();
@@ -294,14 +286,14 @@ WHERE r.SachID = ? AND r.status = 'Approved'";
                     <div class="col d-flex mb-4">
                         <div class="flex-fill p-3">
                             <h5 class="text-uppercase text-highlight">Bansach.com</h5>
-                            <p>Chào mừng bạn đến với Bansach.com,<br> nơi bạn có thể tìm thấy hàng ngàn đầu sách thuộc mọi thể loại.</p>
+                            <p>Chào mừng bạn đến với Bansach.com,<br>nơi bạn có thể tìm thấy hàng ngàn đầu sách thuộc mọi thể loại.</p>
                         </div>
                     </div>
                     <div class="col d-flex mb-4">
                         <div class="flex-fill p-3">
                             <h5 class="text-uppercase text-highlight">Liên kết</h5>
                             <ul class="list-unstyled">
-                                <li><a href="#" class="text-white">Trang chủ</a></li>
+                                <li><a href="Index.php" class="text-white">Trang chủ</a></li>
                                 <li><a href="#" class="text-white">Giới thiệu</a></li>
                                 <li><a href="#" class="text-white">Liên hệ</a></li>
                                 <li><a href="#" class="text-white">Điều khoản dịch vụ</a></li>
@@ -314,7 +306,7 @@ WHERE r.SachID = ? AND r.status = 'Approved'";
                             <ul class="list-unstyled">
                                 <li>Email: tienshop@gmail.com</li>
                                 <li>Điện thoại: 039 210 9580</li>
-                                <li>Địa chỉ: Chí Minh, Tứ Kỳ, Hải Dương.</li>
+                                <li>Địa chỉ: Xã Chí Minh, huyện Tứ Kỳ, tỉnh Hải Dương.</li>
                             </ul>
                         </div>
                     </div>
@@ -322,11 +314,12 @@ WHERE r.SachID = ? AND r.status = 'Approved'";
                         <div class="flex-fill p-3">
                             <h5 class="text-uppercase text-highlight">Theo dõi chúng tôi</h5>
                             <div class="d-flex social-links">
-                                <a href="https://www.facebook.com" class="text-white"><i class="fab fa-facebook-f"></i></a>
-                                <a href="https://www.twitter.com" class="text-white"><i class="fab fa-twitter"></i></a>
-                                <a href="https://www.instagram.com" class="text-white"><i class="fab fa-instagram"></i></a>
-                                <a href="https://www.linkedin.com" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="https://www.facebook.com/ntienyt" class="text-white" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://www.twitter.com" class="text-white" target="_blank"><i class="fab fa-twitter"></i></a>
+                                <a href="https://www.instagram.com" class="text-white" target="_blank"><i class="fab fa-instagram"></i></a>
+                                <a href="https://www.linkedin.com" class="text-white" target="_blank"><i class="fab fa-linkedin-in"></i></a>
                             </div>
+
                         </div>
                     </div>
                     <style>
