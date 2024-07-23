@@ -7,7 +7,100 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
     header("Location: admin_login.php");
     exit;
 }
+// Truy vấn tổng số giao dịch, số giao dịch thành công và số giao dịch thất bại trong tuần
+$sql = "SELECT 
+            SUM(CASE WHEN TrangThai = 'Completed' THEN 1 ELSE 0 END) AS GDSuccess, 
+            SUM(CASE WHEN TrangThai = 'Pending' THEN 1 ELSE 0 END) AS GDPending, 
+            SUM(CASE WHEN TrangThai IN ('RefundedSuccessfully', 'Cancelled') THEN 1 ELSE 0 END) AS GDFailure
+        FROM 
+            donhang
+        WHERE 
+            YEARWEEK(NgayDatHang, 1) = YEARWEEK(CURDATE(), 1)"; //Lọc theo tuần hiện tại
+
+$result = $conn->query($sql);
+$row = $result->fetch_assoc();
+
+$gd_thanh_cong = $row['GDSuccess'];
+$gd_cho_xu_ly = $row['GDPending'];
+$gd_that_bai = $row['GDFailure'];
+
+// Truy vấn tổng số đánh giá, số đánh giá chờ duyệt và số đánh giá đã được duyệt
+$sql = "SELECT 
+            COUNT(*) AS TongSoDanhGia, 
+            SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) AS ChoDuyet, 
+            SUM(CASE WHEN status = 'Approved' THEN 1 ELSE 0 END) AS DaDanhGia 
+        FROM ratings";
+
+$result = $conn->query($sql);
+$row = $result->fetch_assoc();
+
+$tong_so_danh_gia = $row['TongSoDanhGia'];
+$cho_duyet = $row['ChoDuyet'];
+$da_danh_gia = $row['DaDanhGia'];
+
+// Truy vấn tổng số tài khoản, số tài khoản còn hoạt động và số tài khoản ngừng hoạt động
+$sql = "SELECT 
+            COUNT(*) AS TongTaiKhoan, 
+            SUM(CASE WHEN IsActive = 1 THEN 1 ELSE 0 END) AS ConHoatDong, 
+            SUM(CASE WHEN IsActive = 0 THEN 1 ELSE 0 END) AS NgungHoatDong 
+        FROM nguoidung";
+
+$result = $conn->query($sql);
+$row = $result->fetch_assoc();
+
+$tong_tai_khoan = $row['TongTaiKhoan'];
+$con_hoat_dong = $row['ConHoatDong'];
+$ngung_hoat_dong = $row['NgungHoatDong'];
+
+// Truy vấn tổng số nhà xuất bản
+$sql_total_publishers = "SELECT COUNT(*) AS TongNhaXuatBan FROM nhaxuatban";
+$result_total_publishers = $conn->query($sql_total_publishers);
+$row_total_publishers = $result_total_publishers->fetch_assoc();
+$tong_nha_xuat_ban = $row_total_publishers['TongNhaXuatBan'];
+
+// Truy vấn hai nhà xuất bản có nhiều sách nhất
+$sql_top_publishers = "SELECT 
+                          n.NXBID, 
+                          n.TenNXB, 
+                          COUNT(s.SachID) AS SoSach
+                       FROM 
+                          nhaxuatban n
+                       LEFT JOIN 
+                          sach s ON n.NXBID = s.NXBID
+                       GROUP BY 
+                          n.NXBID, n.TenNXB
+                       ORDER BY 
+                          SoSach DESC
+                       LIMIT 3";
+
+$result_top_publishers = $conn->query($sql_top_publishers);
+
+// Lưu kết quả hai nhà xuất bản vào mảng
+$top_publishers = [];
+while ($row = $result_top_publishers->fetch_assoc()) {
+    $top_publishers[] = $row['TenNXB'] . " (" . $row['SoSach'] . " sp)";
+}
+
+// Truy vấn các sách sắp hết hàng
+$sql_low_stock_books = "SELECT 
+                            TenSach, 
+                            SoLuong 
+                        FROM 
+                            sach 
+                        WHERE 
+                            SoLuong <= 5";
+
+$result_low_stock_books = $conn->query($sql_low_stock_books);
+
+// Lưu kết quả sách sắp hết hàng vào mảng
+$low_stock_books = [];
+while ($row = $result_low_stock_books->fetch_assoc()) {
+    $low_stock_books[] = $row['TenSach'] . " - Còn lại: " . $row['SoLuong'];
+}
+
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -176,6 +269,7 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
                 height: 150px;
                 /* Adjust height for mobile screens */
             }
+
         }
     </style>
 </head>
@@ -220,22 +314,32 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
                 </div>
                 <div class="info-container">
                     <div class="info-box left">
-                        <h4>Quản lý Đơn hàng</h4>
+                        <h4>Thông tin đơn hàng</h4>
+                        <h6>GD đang đợi duyệt: <?php echo $gd_cho_xu_ly; ?></h6>
+                        <h6>GD thành công: <?php echo $gd_thanh_cong; ?></h6>
+                        <h6>GD thất bại: <?php echo $gd_that_bai; ?></h6>
                     </div>
                     <div class="info-box right">
-                        <h4>Quản lý Sách</h4>
+                        <h4>Thông tin Sách</h4>
+                        <h6><?php echo empty($low_stock_books) ? "Không có sách nào sắp hết hàng." : implode(" và ", $low_stock_books); ?></h6>
                     </div>
                     <div class="info-box left">
-                        <h4>Quản lý đánh giá</h4>
+                        <h4>Đánh giá</h4>
+                        <h6>Tổng số đánh giá: <?php echo $tong_so_danh_gia; ?></h6>
+                        <h6>Chờ duyệt: <?php echo $cho_duyet; ?></h6>
+                        <h6>Đã đánh giá: <?php echo $da_danh_gia; ?></h6>
                     </div>
+
                     <div class="info-box right">
-                        <h4>Quản lý Nhà Xuất Bản</h4>
+                        <h4>Nhà xuất bản</h4>
+                        <h6>Tổng nhà xuất bản: <?php echo $tong_nha_xuat_ban; ?></h6>
+                        <h6>Nhà xuất bản tin cậy: <?php echo implode(" và ", $top_publishers); ?></h6>
                     </div>
                     <div class="info-box left">
-                        <h4>Quản lý Người Dùng</h4>
-                    </div>
-                    <div class="info-box right">
-                        <h4>Quản lý Admin</h4>
+                        <h4>Người dùng</h4>
+                        <h6>Tài khoản: <?php echo $tong_tai_khoan; ?></h6>
+                        <h6>Còn hoạt động: <?php echo $con_hoat_dong; ?></h6>
+                        <h6>Ngừng hoạt động: <?php echo $ngung_hoat_dong; ?></h6>
                     </div>
                 </div>
             </main>

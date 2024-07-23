@@ -3,15 +3,6 @@ session_start();
 include 'db_connect.php'; // Kết nối tới CSDL
 
 
-
-// Lấy danh sách sách sắp hoặc đã hết hàng
-$sql = "SELECT TenSach, SoLuong FROM sach WHERE SoLuong <= 5";
-$result = $conn->query($sql);
-$low_stock_books = [];
-while ($row = $result->fetch_assoc()) {
-    $low_stock_books[] = $row;
-}
-
 // Thiết lập giá trị mặc định cho khoảng thời gian thống kê
 $start_date = date('Y-m-d 00:00:00');
 $end_date = date('Y-m-d 23:59:59');
@@ -79,7 +70,7 @@ $sql = "SELECT SUM(TongTien) AS revenue FROM donhang WHERE TrangThai = 'Complete
 $result = $conn->query($sql);
 $revenue_received = $result->fetch_assoc()['revenue'];
 
-$sql = "SELECT SUM(TongTien) AS revenue FROM donhang WHERE TrangThai IN ('Completed', 'Pending') AND NgayDatHang BETWEEN '$start_date' AND '$end_date'";
+$sql = "SELECT SUM(TongTien) AS revenue FROM donhang WHERE TrangThai IN ('Completed', 'Pending','Processing') AND NgayDatHang BETWEEN '$start_date' AND '$end_date'";
 $result = $conn->query($sql);
 $revenue_estimated = $result->fetch_assoc()['revenue'];
 
@@ -94,6 +85,62 @@ $order_data = [
 
 $periods_json = json_encode($periods); // Đảm bảo mảng chứa chuỗi
 $revenues_json = json_encode($revenues, JSON_NUMERIC_CHECK); // Đảm bảo số được mã hóa đúng
+
+// Truy vấn top 3 khách hàng mua nhiều nhất trong tháng hiện tại
+$sql_top_customers = "SELECT 
+                         u.HoTen, 
+                         COUNT(d.ID) AS SoDonHang, 
+                         SUM(d.TongTien) AS TongTien
+                     FROM 
+                         donhang d
+                     JOIN 
+                         nguoidung u ON d.ID = u.ID
+                     WHERE 
+                         d.TrangThai = 'Completed' AND
+                         MONTH(d.NgayDatHang) = MONTH(CURRENT_DATE()) AND
+                         YEAR(d.NgayDatHang) = YEAR(CURRENT_DATE())  -- Chỉ tính hóa đơn trong tháng hiện tại
+                     GROUP BY 
+                         u.HoTen
+                     ORDER BY 
+                         SoDonHang DESC
+                     LIMIT 3";
+
+$result_top_customers = $conn->query($sql_top_customers);
+$top_customers = []; // Lưu kết quả khách hàng vào mảng
+while ($row = $result_top_customers->fetch_assoc()) {
+    $top_customers[] = [
+        'HoTen' => $row['HoTen'],
+        'SoDonHang' => $row['SoDonHang'],
+        'TongTien' => number_format($row['TongTien'], 2) // Format tiền tệ
+    ];
+}
+// Truy vấn top 3 sách bán chạy nhất trong tháng hiện tại
+$sql_top_books = "SELECT 
+                     s.TenSach, 
+                     SUM(ct.SoLuong) AS TongSoLuong
+                 FROM 
+                     chitietdonhang ct
+                 JOIN 
+                     donhang d ON ct.DHID = d.DHID
+                 JOIN 
+                     sach s ON ct.SachID = s.SachID
+                 WHERE 
+                     d.TrangThai = 'Completed' AND
+                     MONTH(d.NgayDatHang) = MONTH(CURRENT_DATE()) AND
+                     YEAR(d.NgayDatHang) = YEAR(CURRENT_DATE())  -- Chỉ tính sách bán trong tháng hiện tại
+                 GROUP BY 
+                     s.TenSach
+                 ORDER BY 
+                     TongSoLuong DESC
+                 LIMIT 3";
+
+$result_top_books = $conn->query($sql_top_books);
+$top_books = []; // Lưu kết quả sách bán chạy vào mảng
+while ($row = $result_top_books->fetch_assoc()) {
+    $top_books[] = ['TenSach' => $row['TenSach'], 'SoLuong' => $row['TongSoLuong']];
+}
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -324,14 +371,26 @@ $revenues_json = json_encode($revenues, JSON_NUMERIC_CHECK); // Đảm bảo s�
                 <div class="header">
                     <h2>Thống kê</h2>
                 </div>
+                <button class="btn btn-primary" onclick="window.location.href='admin_dashboard.php'">Quay lại Dashboard</button>
                 <div class="stat-box">
-                    <h3>Sách sắp hết hàng</h3>
+                    <h3>Sách bán chạy trong tháng</h3>
                     <ul>
-                        <?php if (empty($low_stock_books)) : ?>
-                            <li>Không có sách nào sắp hết hàng.</li>
+                        <?php if (empty($top_books)) : ?>
+                            <li>Không có sách nào.</li>
                         <?php else : ?>
-                            <?php foreach ($low_stock_books as $book) : ?>
-                                <li><?php echo $book['TenSach']; ?> - Còn lại: <?php echo $book['SoLuong']; ?></li>
+                            <?php foreach ($top_books as $book) : ?>
+                                <li><?php echo htmlspecialchars($book['TenSach']); ?> - đã bán: <?php echo htmlspecialchars($book['SoLuong']); ?></li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </ul>
+
+                    <h3>Khách hàng mua nhiều nhất trong tháng</h3>
+                    <ul>
+                        <?php if (empty($top_customers)) : ?>
+                            <li>Không có khách hàng nào.</li>
+                        <?php else : ?>
+                            <?php foreach ($top_customers as $customer) : ?>
+                                <li><?php echo htmlspecialchars($customer['HoTen']); ?> - đã mua: <?php echo htmlspecialchars($customer['SoDonHang']); ?> đơn - Tổng tiền: <?php echo htmlspecialchars($customer['TongTien']); ?> VNĐ</li>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </ul>
