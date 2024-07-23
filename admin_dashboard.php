@@ -197,7 +197,7 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
                             <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manager_rattings.php">Quản lý Đánh giá</a>
+                            <a class="nav-link" href="manager_ratings.php">Quản lý Đánh giá</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>

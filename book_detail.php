@@ -34,17 +34,16 @@ if (!$sach) {
             }
 
             .container {
-            margin-top: 40px;
-            margin-bottom: 40px;
-            max-width: 85%;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            border-left: 5px solid #20c997;
-            /* Màu xanh ngọc */
-        }
-
+                margin-top: 40px;
+                margin-bottom: 40px;
+                max-width: 85%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                border-left: 5px solid #20c997;
+                /* Màu xanh ngọc */
+            }
 
             .header {
                 text-align: center;
@@ -128,7 +127,7 @@ if (!$sach) {
                     <p><strong>Nhà xuất bản:</strong> <?php echo htmlspecialchars($sach['TenNXB']); ?></p>
                     <p><strong>Kích thước:</strong> <?php echo htmlspecialchars($sach['KichThuoc']); ?></p>
                     <p><strong>Khối lượng:</strong> <?php echo htmlspecialchars($sach['KhoiLuong']); ?> kg</p>
-                    <p><strong>Đánh giá:</strong> <?php echo htmlspecialchars($sach['KhoiLuong']); ?> Sao</p>
+                    <p><strong>Đánh giá:</strong> Sao</p>
 
                     <!-- Form Thêm vào giỏ -->
                     <form id="add-to-cart-form" method="post" action="add_to_cart.php" class="d-inline">
