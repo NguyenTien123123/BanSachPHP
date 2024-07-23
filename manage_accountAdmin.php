@@ -103,12 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
         }
 
         .container {
-            max-width: 1200px;
-            margin: auto;
-            background-color: #fff;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            max-width: 90%;
+            background: white;
             padding: 20px;
-            border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border-left: 5px solid #20c997;
+            /* Màu xanh ngọc */
         }
 
         h2 {

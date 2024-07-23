@@ -34,14 +34,17 @@ if (!$sach) {
             }
 
             .container {
-                margin-top: 40px;
-                background-color: #fff;
-                padding: 20px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                border-radius: 15px;
-                border-left: 5px solid #20c997;
-                /* Màu xanh ngọc */
-            }
+            margin-top: 40px;
+            margin-bottom: 40px;
+            max-width: 85%;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border-left: 5px solid #20c997;
+            /* Màu xanh ngọc */
+        }
+
 
             .header {
                 text-align: center;
