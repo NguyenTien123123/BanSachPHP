@@ -160,14 +160,17 @@ $conn->close();
         }
 
         .sidebar {
-            background-color: #2e8b57;
+            background-color: white;
             color: #ecf0f1;
             padding: 20px;
             height: 100vh;
+            /* 85% of the viewport height */
             position: fixed;
             width: 250px;
             top: 0;
             left: 0;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
         }
 
         .sidebar h1 {
@@ -198,6 +201,7 @@ $conn->close();
             background-color: #3cb371;
             color: #fff;
         }
+
 
         .content {
             margin-left: 250px;
@@ -302,6 +306,7 @@ $conn->close();
             margin-bottom: 20px;
         }
 
+        /* 
         @media (max-width: 768px) {
             .sidebar {
                 height: auto;
@@ -323,6 +328,28 @@ $conn->close();
                 flex: 1 1 100%;
                 margin: 10px 0;
             }
+        } */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+                /* Ẩn thanh sidebar khi màn hình nhỏ hơn hoặc bằng 768px */
+            }
+
+            .content {
+                margin-left: 0;
+                /* Loại bỏ khoảng cách bên trái khi sidebar bị ẩn */
+            }
+
+            .info-container {
+                flex-direction: column;
+                /* Sắp xếp các info-box theo cột khi màn hình nhỏ */
+                align-items: center;
+            }
+
+            .info-box {
+                flex: 1 1 100%;
+                margin: 10px 0;
+            }
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -334,12 +361,12 @@ $conn->close();
 <body>
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <nav class="sidebar">
                 <div class="sidebar-sticky">
                     <h1>Admin Dashboard</h1>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="admin_Report.php">Thống kê</a>
+                            <a class="nav-link" href="admin_report.php">Thống kê</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
@@ -348,24 +375,24 @@ $conn->close();
                             <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_orders.php">Quản lý Đánh giá</a>
+                            <a class="nav-link" href="manager_ratings.php">Quản lý Đánh giá</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="manage_users.php">Quản lý Người Dùng</a>
+                            <a class="nav-link" href="manage_users.php">Quản lý Người Dùng</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="manage_accountAdmin.php">Admin</a>
+                            <a class="nav-link" href="manage_accountAdmin.php">Admin</a>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link" href="logout_admin.php">Đăng xuất</a>
                         </li>
                     </ul>
                 </div>
             </nav>
+
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div class="header">
                     <h2>Thống kê</h2>

@@ -118,14 +118,17 @@ $conn->close();
         }
 
         .sidebar {
-            background-color: #2e8b57;
+            background-color: white;
             color: #ecf0f1;
             padding: 20px;
             height: 100vh;
+            /* 85% of the viewport height */
             position: fixed;
             width: 250px;
             top: 0;
             left: 0;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
         }
 
         .sidebar h1 {
@@ -277,7 +280,7 @@ $conn->close();
 <body>
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <nav class="sidebar">
                 <div class="sidebar-sticky">
                     <h1>Admin Dashboard</h1>
                     <ul class="nav flex-column">
@@ -308,6 +311,7 @@ $conn->close();
                     </ul>
                 </div>
             </nav>
+
             <main class="col-md-10 ml-sm-auto col-lg-10 px-4">
                 <div class="header">
                     <h2>Dashboard</h2>
