@@ -236,9 +236,7 @@ $conn->close();
 
         .info-box {
             flex: 1 1 calc(50% - 20px);
-            /* Two boxes per row with margin */
             height: 200px;
-            /* Fixed height for uniformity */
             border-radius: 8px;
             padding: 20px;
             text-align: center;
@@ -251,18 +249,12 @@ $conn->close();
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
             background-color: #3cb371;
-            /* Default background color */
+            text-decoration: none !important; /* Loại bỏ gạch chân */
         }
 
-        .info-box.left,
-        .info-box.right {
-            background-color: #3cb371;
-            /* Adjust background color if needed */
-        }
-
-        .info-box h4 {
-            color: #fff;
-            margin-bottom: 20px;
+        .info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         @media (max-width: 768px) {
@@ -317,34 +309,51 @@ $conn->close();
                     <h2>Dashboard</h2>
                 </div>
                 <div class="info-container">
-                    <div class="info-box left">
-                        <h4>Thông tin đơn hàng</h4>
-                        <h6>GD đang đợi duyệt: <?php echo $gd_cho_xu_ly; ?></h6>
-                        <h6>GD thành công: <?php echo $gd_thanh_cong; ?></h6>
-                        <h6>GD thất bại: <?php echo $gd_that_bai; ?></h6>
-                    </div>
-                    <div class="info-box right">
-                        <h4>Thông tin Sách</h4>
-                        <h6><?php echo empty($low_stock_books) ? "Không có sách nào sắp hết hàng." : implode(" và ", $low_stock_books); ?></h6>
-                    </div>
-                    <div class="info-box left">
-                        <h4>Đánh giá</h4>
-                        <h6>Tổng số đánh giá: <?php echo $tong_so_danh_gia; ?></h6>
-                        <h6>Chờ duyệt: <?php echo $cho_duyet; ?></h6>
-                        <h6>Đã đánh giá: <?php echo $da_danh_gia; ?></h6>
-                    </div>
-
-                    <div class="info-box right">
-                        <h4>Nhà xuất bản</h4>
-                        <h6>Tổng nhà xuất bản: <?php echo $tong_nha_xuat_ban; ?></h6>
-                        <h6>Nhà xuất bản tin cậy: <?php echo implode(" và ", $top_publishers); ?></h6>
-                    </div>
-                    <div class="info-box left">
-                        <h4>Người dùng</h4>
-                        <h6>Tài khoản: <?php echo $tong_tai_khoan; ?></h6>
-                        <h6>Còn hoạt động: <?php echo $con_hoat_dong; ?></h6>
-                        <h6>Ngừng hoạt động: <?php echo $ngung_hoat_dong; ?></h6>
-                    </div>
+                    <a href="manage_orders.php" class="info-box">
+                        <div>
+                            <h4>Thông tin đơn hàng</h4>
+                            <h6>GD đang đợi duyệt: <?php echo $gd_cho_xu_ly; ?></h6>
+                            <h6>GD thành công: <?php echo $gd_thanh_cong; ?></h6>
+                            <h6>GD thất bại: <?php echo $gd_that_bai; ?></h6>
+                        </div>
+                    </a>
+                    <a href="manage_books.php" class="info-box">
+                        <div>
+                            <h4>Thông tin Sách</h4>
+                            <h6><?php echo empty($low_stock_books) ? "Không có sách nào sắp hết hàng." : implode(" và ", $low_stock_books); ?></h6>
+                        </div>
+                    </a>
+                    <a href="manager_ratings.php" class="info-box">
+                        <div>
+                            <h4>Đánh giá</h4>
+                            <h6>Tổng số đánh giá: <?php echo $tong_so_danh_gia; ?></h6>
+                            <h6>Chờ duyệt: <?php echo $cho_duyet; ?></h6>
+                            <h6>Đã đánh giá: <?php echo $da_danh_gia; ?></h6>
+                        </div>
+                    </a>
+                    <a href="manage_publishers.php" class="info-box">
+                        <div>
+                            <h4>Nhà xuất bản</h4>
+                            <h6>Tổng nhà xuất bản: <?php echo $tong_nha_xuat_ban; ?></h6>
+                            <h6>Nhà xuất bản tin cậy: <?php echo implode(" và ", $top_publishers); ?></h6>
+                        </div>
+                    </a>
+                    <a href="manage_users.php" class="info-box">
+                        <div>
+                            <h4>Người dùng</h4>
+                            <h6>Tài khoản: <?php echo $tong_tai_khoan; ?></h6>
+                            <h6>Còn hoạt động: <?php echo $con_hoat_dong; ?></h6>
+                            <h6>Ngừng hoạt động: <?php echo $ngung_hoat_dong; ?></h6>
+                        </div>
+                    </a>
+                    <a href="manage_users.php" class="info-box">
+                        <div>
+                            <h4>Nhân viên</h4>
+                            <h6>Tài khoản: <?php echo $tong_tai_khoan; ?></h6>
+                            <h6>Còn hoạt động: <?php echo $con_hoat_dong; ?></h6>
+                            <h6>Ngừng hoạt động: <?php echo $ngung_hoat_dong; ?></h6>
+                        </div>
+                    </a>
                 </div>
             </main>
         </div>

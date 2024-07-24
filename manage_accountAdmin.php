@@ -1,19 +1,34 @@
 <?php
 include 'db_connect.php'; // Ensure this file exists to connect to the database
 
+// Pagination variables
+$recordsPerPage = 10; // Number of records per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
+
+// Search functionality
 $searchKeyword = '';
 if (isset($_GET['search'])) {
     $searchKeyword = $_GET['search'];
-    $query = "SELECT * FROM accountAdmin WHERE TenDangNhap LIKE ?";
+    $query = "SELECT * FROM accountAdmin WHERE TenDangNhap LIKE ? LIMIT ? OFFSET ?";
     $stmt = $conn->prepare($query);
     $searchTerm = "%$searchKeyword%";
-    $stmt->bind_param("s", $searchTerm);
+    $stmt->bind_param("sii", $searchTerm, $recordsPerPage, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    $query = "SELECT * FROM accountAdmin";
-    $result = $conn->query($query);
+    $query = "SELECT * FROM accountAdmin LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ii", $recordsPerPage, $offset);
+    $stmt->execute();
+    $result = $stmt->get_result();
 }
+
+// Count total records for pagination
+$countQuery = "SELECT COUNT(*) as total FROM accountAdmin";
+$countResult = $conn->query($countQuery);
+$totalRecords = $countResult->fetch_assoc()['total'];
+$totalPages = ceil($totalRecords / $recordsPerPage);
 
 // Xử lý xóa tài khoản
 if (isset($_POST['delete_admin_id'])) {
@@ -86,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -172,7 +188,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
             background-color: #dc3545;
         }
 
-
         /* Default styles for sidebar and main content */
         .sidebar h1 {
             text-align: center;
@@ -201,6 +216,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
         .sidebar ul li a:hover {
             background-color: #3cb371;
             color: #fff;
+        }
+
+        .sidebar {
+            background-color: white;
+            color: #ecf0f1;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            margin-left: 270px;
+            /* Adjusted for the width of the sidebar */
+        }
+
+        /* Media query for screen width 768px or less */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                /* Remove margin when sidebar is hidden */
+                width: 100%;
+                /* Make main content area full width */
+            }
         }
 
         @media (max-width: 768px) {
@@ -333,7 +379,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
                 </tbody>
             </table>
         </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                    <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                    <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                    <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

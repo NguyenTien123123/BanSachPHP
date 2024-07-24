@@ -4,6 +4,11 @@ include 'db_connect.php';
 $editState = false;
 $editPublisher = ['NXBID' => '', 'TenNXB' => '', 'DiaChi' => ''];
 
+// Pagination variables
+$recordsPerPage = 10; // Number of records per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_POST['action'] == "add") {
         $tenNXB = $_POST['tenNXB'];
@@ -47,14 +52,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+// Search functionality
 $searchKeyword = '';
 if (isset($_GET['search'])) {
     $searchKeyword = $_GET['search'];
-    $query = "SELECT * FROM nhaxuatban WHERE TenNXB LIKE '%$searchKeyword%' OR DiaChi LIKE '%$searchKeyword%'";
+    $query = "SELECT * FROM nhaxuatban WHERE TenNXB LIKE ? OR DiaChi LIKE ? LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($query);
+    $searchTerm = "%$searchKeyword%";
+    $stmt->bind_param("ssii", $searchTerm, $searchTerm, $recordsPerPage, $offset);
+    $stmt->execute();
+    $result = $stmt->get_result();
 } else {
-    $query = "SELECT * FROM nhaxuatban";
+    $query = "SELECT * FROM nhaxuatban LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ii", $recordsPerPage, $offset);
+    $stmt->execute();
+    $result = $stmt->get_result();
 }
-$result = $conn->query($query);
+
+// Count total records for pagination
+$countQuery = "SELECT COUNT(*) as total FROM nhaxuatban";
+$countResult = $conn->query($countQuery);
+$totalRecords = $countResult->fetch_assoc()['total'];
+$totalPages = ceil($totalRecords / $recordsPerPage);
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -242,6 +264,7 @@ $result = $conn->query($query);
         </div>
     </nav>
 
+
     <div class="container">
         <h2>Quản Lý Nhà Xuất Bản</h2>
         <button class="btn btn-primary btn-sm btn-hide-lg" onclick="window.location.href='admin_dashboard.php'">
@@ -297,8 +320,26 @@ $result = $conn->query($query);
                 </tbody>
             </table>
         </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                    <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                    <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                    <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
-
     <script>
         function confirmDelete() {
             return confirm('Bạn có chắc chắn muốn xóa mục này không?');
