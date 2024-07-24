@@ -191,6 +191,12 @@ $result = $conn->query($query);
                 margin-left: 0;
             }
         }
+
+        @media (min-width: 769px) {
+            .btn-hide-lg {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -229,7 +235,7 @@ $result = $conn->query($query);
 
     <div class="container">
         <h2>Quản Lý Đánh Giá</h2>
-        <button class="btn btn-primary btn-sm" onclick="window.location.href='admin_dashboard.php'">
+        <button class="btn btn-primary btn-sm btn-hide-lg" onclick="window.location.href='admin_dashboard.php'">
             <i class="fas fa-home"></i>
         </button>
         <form method="post" class="form-inline mb-3">

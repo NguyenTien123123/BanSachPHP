@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Người Dùng</title>
+    <title>Quản Lý Admin</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -174,32 +174,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
 
 
         /* Default styles for sidebar and main content */
-        .sidebar {
-            background-color: white;
-            color: #ecf0f1;
-            padding: 20px;
-            height: 100vh;
-            position: fixed;
-            width: 250px;
-            top: 0;
-            left: 0;
-            overflow-y: auto;
-        }
-
-        /* Media query for screen width 768px or less */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 0;
-                /* Remove margin when sidebar is hidden */
-                width: 100%;
-                /* Make main content area full width */
-            }
-        }
-
         .sidebar h1 {
             text-align: center;
             color: #3cb371;
@@ -227,6 +201,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
         .sidebar ul li a:hover {
             background-color: #3cb371;
             color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            body {
+                margin-left: 0;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .btn-hide-lg {
+                display: none;
+            }
         }
     </style>
     <script>
@@ -291,8 +283,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
     </nav>
 
     <div class="container">
-        <h2>Quản Lý Người Dùng</h2>
-        <button class="btn btn-primary btn-sm" onclick="window.location.href='admin_dashboard.php'">
+        <h2>Admin</h2>
+        <button class="btn btn-primary btn-sm btn-hide-lg" onclick="window.location.href='admin_dashboard.php'">
             <i class="fas fa-home"></i>
         </button>
         <!-- Form tìm kiếm người dùng -->

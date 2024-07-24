@@ -232,6 +232,12 @@ $result = $stmt->get_result();
         .notification.error {
             background-color: #dc3545;
         }
+
+        @media (min-width: 769px) {
+            .btn-hide-lg {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -270,7 +276,7 @@ $result = $stmt->get_result();
     <div class="main-content">
         <div class="container">
             <h2>Quản Lý Đơn Hàng</h2>
-            <button class="btn btn-primary btn-sm" onclick="window.location.href='admin_dashboard.php'">
+            <button class="btn btn-primary btn-sm btn-hide-lg" onclick="window.location.href='admin_dashboard.php'">
                 <i class="fas fa-home"></i>
             </button>
             <form method="post" class="form-inline mb-3">
