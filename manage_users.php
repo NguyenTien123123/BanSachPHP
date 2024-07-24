@@ -1,16 +1,67 @@
 <?php
 include 'db_connect.php'; // Ensure you have this file to connect to your database
 
+// Pagination variables
+$recordsPerPage = 10; // Number of records per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
+
+// Search keyword handling
 $searchKeyword = '';
+$searchParam = '';
+$query = "SELECT * FROM nguoidung";
+
+// If search keyword is provided, add search conditions
 if (isset($_GET['search'])) {
     $searchKeyword = $_GET['search'];
-    $query = "SELECT * FROM nguoidung WHERE TenDangNhap LIKE '%$searchKeyword%' OR Email LIKE '%$searchKeyword%' OR SoDienThoai LIKE '%$searchKeyword%' OR DiaChi LIKE '%$searchKeyword%'";
+    $searchParam = "%$searchKeyword%";
+    $query .= " WHERE TenDangNhap LIKE ? 
+                OR Email LIKE ? 
+                OR SoDienThoai LIKE ? 
+                OR DiaChi LIKE ? 
+                LIMIT ? OFFSET ?";
 } else {
-    $query = "SELECT * FROM nguoidung";
+    $query .= " LIMIT ? OFFSET ?";
 }
-$result = $conn->query($query);
-?>
 
+$stmt = $conn->prepare($query);
+
+// Bind parameters for search
+if (isset($_GET['search'])) {
+    $stmt->bind_param("ssssii", $searchParam, $searchParam, $searchParam, $searchParam, $recordsPerPage, $offset);
+} else {
+    $stmt->bind_param("ii", $recordsPerPage, $offset);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Count total records for pagination
+$countQuery = "SELECT COUNT(*) as total FROM nguoidung";
+if (isset($_GET['search'])) {
+    $countQuery .= " WHERE TenDangNhap LIKE ? 
+                     OR Email LIKE ? 
+                     OR SoDienThoai LIKE ? 
+                     OR DiaChi LIKE ?";
+    $countStmt = $conn->prepare($countQuery);
+    $countStmt->bind_param("ssss", $searchParam, $searchParam, $searchParam, $searchParam);
+} else {
+    $countStmt = $conn->query($countQuery);
+    $totalRecords = $countStmt->fetch_assoc()['total'];
+    $totalPages = ceil($totalRecords / $recordsPerPage);
+    $countStmt->close();
+}
+
+// Fetch total records when using prepared statements
+if (isset($_GET['search'])) {
+    $countStmt->execute();
+    $totalRecords = $countStmt->get_result()->fetch_assoc()['total'];
+    $totalPages = ceil($totalRecords / $recordsPerPage);
+    $countStmt->close();
+}
+
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -191,11 +242,8 @@ $result = $conn->query($query);
 
     <div class="container">
         <h2>Quản Lý Người Dùng</h2>
-        <button class="btn btn-primary btn-sm btn-hide-lg" onclick="window.location.href='admin_dashboard.php'">
-            <i class="fas fa-home"></i>
-        </button>
         <!-- Form tìm kiếm người dùng -->
-        <form class="form-inline" method="get" action="manager_user.php">
+        <form class="form-inline" method="get" action="manage_users.php">
             <input class="form-control" type="search" name="search" placeholder="Tìm kiếm người dùng" aria-label="Search" value="<?php echo htmlspecialchars($searchKeyword); ?>">
             <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
         </form>
@@ -235,6 +283,26 @@ $result = $conn->query($query);
                 </tbody>
             </table>
         </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                    <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                    <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                    <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <script>
