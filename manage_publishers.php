@@ -31,15 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: manage_publishers.php");
             exit();
         }
-    } elseif ($_POST['action'] == "delete") {
-        $nxbID = $_POST['nxbID'];
-        $sql = "DELETE FROM nhaxuatban WHERE NXBID = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $nxbID);
-        if ($stmt->execute()) {
-            header("Location: manage_publishers.php");
-            exit();
-        }
+        // } elseif ($_POST['action'] == "delete") {
+        //     $nxbID = $_POST['nxbID'];
+        //     $sql = "DELETE FROM nhaxuatban WHERE NXBID = ?";
+        //     $stmt = $conn->prepare($sql);
+        //     $stmt->bind_param("i", $nxbID);
+        //     if ($stmt->execute()) {
+        //         header("Location: manage_publishers.php");
+        //         exit();
+        //     }
     } elseif ($_POST['action'] == "load") {
         $nxbID = $_POST['nxbID'];
         $sql = "SELECT * FROM nhaxuatban WHERE NXBID = ?";
@@ -294,11 +294,6 @@ $conn->close();
                         echo "<td>" . htmlspecialchars($row['TenNXB']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['DiaChi']) . "</td>";
                         echo "<td>
-                            <form method='post' class='d-inline' onsubmit='return confirmDelete()'>
-                                <input type='hidden' name='action' value='delete'>
-                                <input type='hidden' name='nxbID' value='" . htmlspecialchars($row['NXBID']) . "'>
-                                <button type='submit' class='btn btn-danger btn-sm'>Xóa</button>
-                            </form>
                             <form method='post' class='d-inline'>
                                 <input type='hidden' name='action' value='load'>
                                 <input type='hidden' name='nxbID' value='" . htmlspecialchars($row['NXBID']) . "'>
@@ -306,6 +301,11 @@ $conn->close();
                             </form>
                         </td>";
                         echo "</tr>";
+                        //     <form method='post' class='d-inline' onsubmit='return confirmDelete()'>
+                        //     <input type='hidden' name='action' value='delete'>
+                        //     <input type='hidden' name='nxbID' value='" . htmlspecialchars($row['NXBID']) . "'>
+                        //     <button type='submit' class='btn btn-danger btn-sm'>Xóa</button>
+                        // </form>
                     }
                     ?>
                 </tbody>
@@ -331,11 +331,11 @@ $conn->close();
             </ul>
         </nav>
     </div>
-    <script>
+    <!-- <script>
         function confirmDelete() {
             return confirm('Bạn có chắc chắn muốn xóa mục này không?');
         }
-    </script>
+    </script> -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
