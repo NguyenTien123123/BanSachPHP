@@ -11,11 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = $_POST['password'];
 
         // Kiểm tra thông tin đăng nhập
-        if ($username == 'admin' && $password == 'admin') {
+        if ($username == 'managers' && $password == 'managers') {
             // Đăng nhập thành công
             $_SESSION['admin_loggedin'] = true;
             $_SESSION['admin_username'] = $username;
-            header("Location: admin_dashboard.php"); // Chuyển đến dashboard admin
+            header("Location: managers.php"); // Chuyển đến dashboard admin
             exit;
         } else {
             // Thông tin đăng nhập sai
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>Managers</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
     <div class="container login-container">
-        <h2 class="text-center">Admin</h2>
+        <h2 class="text-center">Managers</h2>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <div class="form-group">
                 <label for="username">Tên đăng nhập:</label>

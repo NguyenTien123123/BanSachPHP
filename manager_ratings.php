@@ -1,6 +1,11 @@
 <?php
 include 'db_connect.php'; // Kết nối CSDL
 
+// Pagination variables
+$recordsPerPage = 10; // Number of records per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
+
 // Thêm phần xử lý khi có hành động update
 if (isset($_POST['action'])) {
     $ratingID = $_POST['ratingID'];
@@ -14,7 +19,7 @@ if (isset($_POST['action'])) {
             break;
     }
     // Chuyển hướng để tránh re-post khi refresh
-    header("Location: manager_ratings.php");
+    header("Location: manager_ratings.php?page=$page"); // Maintain the current page number
     exit();
 }
 
@@ -32,23 +37,76 @@ if (isset($_POST['status_filter'])) {
     $status_filter = $_POST['status_filter'];
 }
 
-// Lấy dữ liệu từ bảng ratings
+// Prepare SQL query
 $query = "SELECT r.id_rat, s.TenSach, r.rating, r.created_at, r.comment, r.status 
           FROM ratings r 
           JOIN sach s ON r.SachID = s.SachID 
           WHERE 1";
 
+$params = [];
+$types = "";
+
+// Add date filter
 if ($date_filter_start && $date_filter_end) {
-    $query .= " AND DATE(r.created_at) BETWEEN '$date_filter_start' AND '$date_filter_end'";
+    $query .= " AND DATE(r.created_at) BETWEEN ? AND ?";
+    $params[] = $date_filter_start;
+    $params[] = $date_filter_end;
+    $types .= "ss";
 }
 
+// Add status filter
 if ($status_filter) {
-    $query .= " AND r.status = '$status_filter'";
+    $query .= " AND r.status = ?";
+    $params[] = $status_filter;
+    $types .= "s";
 }
 
-$query .= " ORDER BY r.created_at DESC LIMIT 30";
+// Pagination logic
+$query .= " ORDER BY r.created_at DESC LIMIT ? OFFSET ?";
+$params[] = $recordsPerPage;
+$params[] = $offset;
+$types .= "ii";
 
-$result = $conn->query($query);
+// Execute the query
+$stmt = $conn->prepare($query);
+$stmt->bind_param($types, ...$params);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Count total records for pagination
+$countQuery = "SELECT COUNT(*) as total FROM ratings r 
+               JOIN sach s ON r.SachID = s.SachID 
+               WHERE 1";
+
+$countParams = [];
+$countTypes = "";
+
+// Add date filter for count
+if ($date_filter_start && $date_filter_end) {
+    $countQuery .= " AND DATE(r.created_at) BETWEEN ? AND ?";
+    $countParams[] = $date_filter_start;
+    $countParams[] = $date_filter_end;
+    $countTypes .= "ss";
+}
+
+// Add status filter for count
+if ($status_filter) {
+    $countQuery .= " AND r.status = ?";
+    $countParams[] = $status_filter;
+    $countTypes .= "s";
+}
+
+// Execute the count query
+$countStmt = $conn->prepare($countQuery);
+if (!empty($countParams)) {
+    $countStmt->bind_param($countTypes, ...$countParams);
+}
+$countStmt->execute();
+$countResult = $countStmt->get_result();
+$totalRecords = $countResult->fetch_assoc()['total'];
+$totalPages = ceil($totalRecords / $recordsPerPage);
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -206,9 +264,6 @@ $result = $conn->query($query);
             <h1>Admin Dashboard</h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="admin_report.php">Thống kê</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
                 </li>
                 <li class="nav-item">
@@ -221,18 +276,11 @@ $result = $conn->query($query);
                     <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_users.php">Quản lý Người Dùng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_accountAdmin.php">Admin</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="logout_admin.php">Đăng xuất</a>
                 </li>
             </ul>
         </div>
     </nav>
-
     <div class="container">
         <h2>Quản Lý Đánh Giá</h2>
         <button class="btn btn-primary btn-sm btn-hide-lg" onclick="window.location.href='admin_dashboard.php'">
@@ -272,7 +320,7 @@ $result = $conn->query($query);
                             <td><?php echo date("d-m-Y", strtotime($row['created_at'])); ?></td>
                             <td><?php echo htmlspecialchars($row['comment']); ?></td>
                             <td>
-                                <form action="manager_ratings.php" method="post" class="d-inline">
+                                <form action="manager_ratings.php?page=<?php echo $page; ?>" method="post" class="d-inline">
                                     <input type="hidden" name="ratingID" value="<?php echo htmlspecialchars($row['id_rat']); ?>">
                                     <input type="hidden" name="action" value="update">
                                     <?php if ($row['status'] != 'Approved') : ?>
@@ -294,6 +342,27 @@ $result = $conn->query($query);
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination controls -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                    <a class="page-link" href="?page=<?php echo ($page - 1); ?>&filter_date_start=<?php echo urlencode($date_filter_start); ?>&filter_date_end=<?php echo urlencode($date_filter_end); ?>&status_filter=<?php echo urlencode($status_filter); ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                    <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>&filter_date_start=<?php echo urlencode($date_filter_start); ?>&filter_date_end=<?php echo urlencode($date_filter_end); ?>&status_filter=<?php echo urlencode($status_filter); ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                    <a class="page-link" href="?page=<?php echo ($page + 1); ?>&filter_date_start=<?php echo urlencode($date_filter_start); ?>&filter_date_end=<?php echo urlencode($date_filter_end); ?>&status_filter=<?php echo urlencode($status_filter); ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

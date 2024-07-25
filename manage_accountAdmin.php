@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Admin</title>
+    <title>Quản Lý admin</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -298,22 +298,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
 <body>
     <nav class="sidebar">
         <div class="sidebar-sticky">
-            <h1>Admin Dashboard</h1>
+            <h1>Managers Dashboard</h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link" href="admin_report.php">Thống kê</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manager_ratings.php">Quản lý Đánh giá</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="manage_users.php">Quản lý Người Dùng</a>
@@ -322,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
                     <a class="nav-link" href="manage_accountAdmin.php">Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="logout_admin.php">Đăng xuất</a>
+                    <a class="nav-link" href="login_managers.php">Đăng xuất</a>
                 </li>
             </ul>
         </div>

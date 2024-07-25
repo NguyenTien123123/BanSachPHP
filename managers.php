@@ -4,85 +4,40 @@ include 'db_connect.php'; // Kết nối tới CSDL
 
 // Kiểm tra xem admin đã đăng nhập chưa
 if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("Location: admin_login.php");
+    header("Location: login_manager.php");
     exit;
 }
-// Truy vấn tổng số giao dịch, số giao dịch thành công và số giao dịch thất bại trong tuần
+
+// Truy vấn tổng số tài khoản, số tài khoản còn hoạt động và số tài khoản ngừng hoạt động
 $sql = "SELECT 
-            SUM(CASE WHEN TrangThai = 'Completed' THEN 1 ELSE 0 END) AS GDSuccess, 
-            SUM(CASE WHEN TrangThai = 'Pending' THEN 1 ELSE 0 END) AS GDPending, 
-            SUM(CASE WHEN TrangThai IN ('RefundedSuccessfully', 'Cancelled') THEN 1 ELSE 0 END) AS GDFailure
-        FROM 
-            donhang
-        WHERE 
-            YEARWEEK(NgayDatHang, 1) = YEARWEEK(CURDATE(), 1)"; //Lọc theo tuần hiện tại
+            COUNT(*) AS TongTaiKhoan, 
+            SUM(CASE WHEN IsActive = 1 THEN 1 ELSE 0 END) AS ConHoatDong, 
+            SUM(CASE WHEN IsActive = 0 THEN 1 ELSE 0 END) AS NgungHoatDong 
+        FROM nguoidung";
 
 $result = $conn->query($sql);
 $row = $result->fetch_assoc();
 
-$gd_thanh_cong = $row['GDSuccess'];
-$gd_cho_xu_ly = $row['GDPending'];
-$gd_that_bai = $row['GDFailure'];
+$tong_tai_khoan = $row['TongTaiKhoan'];
+$con_hoat_dong = $row['ConHoatDong'];
+$ngung_hoat_dong = $row['NgungHoatDong'];
 
-// Truy vấn tổng số đánh giá, số đánh giá chờ duyệt và số đánh giá đã được duyệt
+
+
+
+// Truy vấn tổng số tài khoản, số tài khoản còn hoạt động và số tài khoản ngừng hoạt động
 $sql = "SELECT 
-            COUNT(*) AS TongSoDanhGia, 
-            SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) AS ChoDuyet, 
-            SUM(CASE WHEN status = 'Approved' THEN 1 ELSE 0 END) AS DaDanhGia 
-        FROM ratings";
+            COUNT(*) AS TongTaiKhoanAd, 
+            SUM(CASE WHEN IsActive = 1 THEN 1 ELSE 0 END) AS ConHoatDongAd, 
+            SUM(CASE WHEN IsActive = 0 THEN 1 ELSE 0 END) AS NgungHoatDongAd 
+        FROM accountadmin";
 
 $result = $conn->query($sql);
 $row = $result->fetch_assoc();
 
-$tong_so_danh_gia = $row['TongSoDanhGia'];
-$cho_duyet = $row['ChoDuyet'];
-$da_danh_gia = $row['DaDanhGia'];
-
-// Truy vấn tổng số nhà xuất bản
-$sql_total_publishers = "SELECT COUNT(*) AS TongNhaXuatBan FROM nhaxuatban";
-$result_total_publishers = $conn->query($sql_total_publishers);
-$row_total_publishers = $result_total_publishers->fetch_assoc();
-$tong_nha_xuat_ban = $row_total_publishers['TongNhaXuatBan'];
-
-// Truy vấn hai nhà xuất bản có nhiều sách nhất
-$sql_top_publishers = "SELECT 
-                          n.NXBID, 
-                          n.TenNXB, 
-                          COUNT(s.SachID) AS SoSach
-                       FROM 
-                          nhaxuatban n
-                       LEFT JOIN 
-                          sach s ON n.NXBID = s.NXBID
-                       GROUP BY 
-                          n.NXBID, n.TenNXB
-                       ORDER BY 
-                          SoSach DESC
-                       LIMIT 3";
-
-$result_top_publishers = $conn->query($sql_top_publishers);
-
-// Lưu kết quả hai nhà xuất bản vào mảng
-$top_publishers = [];
-while ($row = $result_top_publishers->fetch_assoc()) {
-    $top_publishers[] = $row['TenNXB'] . " (" . $row['SoSach'] . " sp)";
-}
-
-// Truy vấn các sách sắp hết hàng
-$sql_low_stock_books = "SELECT 
-                            TenSach, 
-                            SoLuong 
-                        FROM 
-                            sach 
-                        WHERE 
-                            SoLuong <= 5";
-
-$result_low_stock_books = $conn->query($sql_low_stock_books);
-
-// Lưu kết quả sách sắp hết hàng vào mảng
-$low_stock_books = [];
-while ($row = $result_low_stock_books->fetch_assoc()) {
-    $low_stock_books[] = $row['TenSach'] . " - Còn lại: " . $row['SoLuong'];
-}
+$tong_tai_khoanAd = $row['TongTaiKhoanAd'];
+$con_hoat_dongAd = $row['ConHoatDongAd'];
+$ngung_hoat_dongAd = $row['NgungHoatDongAd'];
 
 $conn->close();
 ?>
@@ -93,7 +48,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Managers Dashboard</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet">
     <style>
@@ -260,19 +215,16 @@ $conn->close();
         <div class="row">
             <nav class="sidebar">
                 <div class="sidebar-sticky">
-                    <h1>Admin Dashboard</h1>
+                    <h1>Manager Dashboard</h1>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
+                            <a class="nav-link" href="admin_report.php">Thống kê</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
+                            <a class="nav-link" href="manage_users.php">Quản lý Người Dùng</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manager_ratings.php">Quản lý Đánh giá</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
+                            <a class="nav-link" href="manage_accountAdmin.php">Admin</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="login_managers.php">Đăng xuất</a>
@@ -286,33 +238,20 @@ $conn->close();
                     <h2>Dashboard</h2>
                 </div>
                 <div class="info-container">
-                    <a href="manage_orders.php" class="info-box">
+                    <a href="manage_users.php" class="info-box">
                         <div>
-                            <h4>Thông tin đơn hàng</h4>
-                            <h6>GD đang đợi duyệt: <?php echo $gd_cho_xu_ly; ?></h6>
-                            <h6>GD thành công: <?php echo $gd_thanh_cong; ?></h6>
-                            <h6>GD thất bại: <?php echo $gd_that_bai; ?></h6>
+                            <h4>Người dùng</h4>
+                            <h6>Tài khoản: <?php echo $tong_tai_khoan; ?></h6>
+                            <h6>Còn hoạt động: <?php echo $con_hoat_dong; ?></h6>
+                            <h6>Ngừng hoạt động: <?php echo $ngung_hoat_dong; ?></h6>
                         </div>
                     </a>
-                    <a href="manage_books.php" class="info-box">
+                    <a href="manage_accountAdmin.php" class="info-box">
                         <div>
-                            <h4>Thông tin Sách</h4>
-                            <h6><?php echo empty($low_stock_books) ? "Không có sách nào sắp hết hàng." : implode(" và ", $low_stock_books); ?></h6>
-                        </div>
-                    </a>
-                    <a href="manager_ratings.php" class="info-box">
-                        <div>
-                            <h4>Đánh giá</h4>
-                            <h6>Tổng số đánh giá: <?php echo $tong_so_danh_gia; ?></h6>
-                            <h6>Chờ duyệt: <?php echo $cho_duyet; ?></h6>
-                            <h6>Đã đánh giá: <?php echo $da_danh_gia; ?></h6>
-                        </div>
-                    </a>
-                    <a href="manage_publishers.php" class="info-box">
-                        <div>
-                            <h4>Nhà xuất bản</h4>
-                            <h6>Tổng nhà xuất bản: <?php echo $tong_nha_xuat_ban; ?></h6>
-                            <h6>Nhà xuất bản tin cậy: <?php echo implode(" và ", $top_publishers); ?></h6>
+                            <h4>Nhân viên</h4>
+                            <h6>Tài khoản: <?php echo $tong_tai_khoanAd; ?></h6>
+                            <h6>Còn hoạt động: <?php echo $con_hoat_dongAd; ?></h6>
+                            <h6>Ngừng hoạt động: <?php echo $ngung_hoat_dongAd; ?></h6>
                         </div>
                     </a>
                 </div>

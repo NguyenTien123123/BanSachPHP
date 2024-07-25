@@ -237,9 +237,6 @@ $conn->close();
             <h1>Admin Dashboard</h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="admin_report.php">Thống kê</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
                 </li>
                 <li class="nav-item">
@@ -250,12 +247,6 @@ $conn->close();
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_users.php">Quản lý Người Dùng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_accountAdmin.php">Admin</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout_admin.php">Đăng xuất</a>

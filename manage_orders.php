@@ -1,6 +1,7 @@
 <?php
 include 'db_connect.php'; // Ensure this file exists to connect to the database
 
+// Handling form submission for order updates
 if (isset($_POST['action'])) {
     $orderID = $_POST['orderID'];
     switch ($_POST['action']) {
@@ -29,48 +30,80 @@ if (isset($_POST['action'])) {
                 $error = "Lỗi khi cập nhật trạng thái: " . $stmt->error;
             }
             $stmt->close();
-            break;
+            // Redirect to avoid re-post on refresh
+            header("Location: manage_orders.php" . (isset($error) ? "?error=" . urlencode($error) : ""));
+            exit();
     }
-    // Redirect to avoid re-post on refresh
-    header("Location: manage_orders.php" . (isset($error) ? "?error=" . urlencode($error) : ""));
-    exit();
 }
 
-// Filters
-$date_filter_start = '';
-$date_filter_end = '';
-$status_filter = '';
+// Filtering
+$date_filter_start = isset($_POST['filter_date_start']) ? $_POST['filter_date_start'] : '';
+$date_filter_end = isset($_POST['filter_date_end']) ? $_POST['filter_date_end'] : '';
+$status_filter = isset($_POST['status_filter']) ? $_POST['status_filter'] : '';
 
-if (isset($_POST['filter_date_start']) && isset($_POST['filter_date_end'])) {
-    $date_filter_start = $_POST['filter_date_start'];
-    $date_filter_end = $_POST['filter_date_end'];
-}
+// Pagination Variables
+$limit = 15;
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$offset = ($page - 1) * $limit;
 
-if (isset($_POST['status_filter'])) {
-    $status_filter = $_POST['status_filter'];
-}
-
+// Building the query for filtering and pagination
 $query = "SELECT DHID, TrangThai, NgayDatHang, TongTien, PhuongThucThanhToan FROM donhang WHERE 1";
+
+$params = [];
+$types = '';
 
 if ($date_filter_start && $date_filter_end) {
     $query .= " AND DATE(NgayDatHang) BETWEEN ? AND ?";
+    $params[] = $date_filter_start;
+    $params[] = $date_filter_end;
+    $types .= 'ss';
 }
 
 if ($status_filter) {
     $query .= " AND TrangThai = ?";
+    $params[] = $status_filter;
+    $types .= 's';
 }
 
-$query .= " ORDER BY NgayDatHang DESC LIMIT 30";
+$query .= " ORDER BY NgayDatHang DESC LIMIT ? OFFSET ?";
+$params[] = $limit;
+$params[] = $offset;
+$types .= 'ii';
 
 $stmt = $conn->prepare($query);
-if ($date_filter_start && $date_filter_end) {
-    $stmt->bind_param("ss", $date_filter_start, $date_filter_end);
-} elseif ($status_filter) {
-    $stmt->bind_param("s", $status_filter);
-}
+$stmt->bind_param($types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
+
+// Total record count for pagination
+$countQuery = "SELECT COUNT(*) as total FROM donhang WHERE 1";
+
+$countParams = [];
+$countTypes = '';
+
+if ($date_filter_start && $date_filter_end) {
+    $countQuery .= " AND DATE(NgayDatHang) BETWEEN ? AND ?";
+    $countParams[] = $date_filter_start;
+    $countParams[] = $date_filter_end;
+    $countTypes .= 'ss';
+}
+
+if ($status_filter) {
+    $countQuery .= " AND TrangThai = ?";
+    $countParams[] = $status_filter;
+    $countTypes .= 's';
+}
+
+$countStmt = $conn->prepare($countQuery);
+if ($countTypes) {
+    $countStmt->bind_param($countTypes, ...$countParams);
+}
+$countStmt->execute();
+$countResult = $countStmt->get_result();
+$totalRows = $countResult->fetch_assoc()['total'];
+$totalPages = ceil($totalRows / $limit);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -247,9 +280,6 @@ $result = $stmt->get_result();
             <h1>Admin Dashboard</h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="admin_report.php">Thống kê</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
                 </li>
                 <li class="nav-item">
@@ -262,12 +292,6 @@ $result = $stmt->get_result();
                     <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_users.php">Quản lý Người Dùng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_accountAdmin.php">Admin</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="logout_admin.php">Đăng xuất</a>
                 </li>
             </ul>
@@ -276,6 +300,7 @@ $result = $stmt->get_result();
     <div class="main-content">
         <div class="container">
             <h2>Quản Lý Đơn Hàng</h2>
+            <!-- Your existing form and table structure -->
             <button class="btn btn-primary btn-sm btn-hide-lg" onclick="window.location.href='admin_dashboard.php'">
                 <i class="fas fa-home"></i>
             </button>
@@ -335,26 +360,45 @@ $result = $stmt->get_result();
                     </tbody>
                 </table>
             </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                        <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                        <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                        <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        function showNotification(message, isError = false) {
-            const notification = document.createElement('div');
-            notification.className = 'notification' + (isError ? ' error' : '');
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            notification.style.display = 'block';
-            setTimeout(() => notification.style.display = 'none', 3000);
-        }
 
-        <?php if (isset($error)) : ?>
-            showNotification('<?php echo htmlspecialchars($error); ?>', true);
-        <?php endif; ?>
-    </script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            function showNotification(message, isError = false) {
+                const notification = document.createElement('div');
+                notification.className = 'notification' + (isError ? ' error' : '');
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                notification.style.display = 'block';
+                setTimeout(() => notification.style.display = 'none', 3000);
+            }
+
+            <?php if (isset($error)) : ?>
+                showNotification('<?php echo htmlspecialchars($error); ?>', true);
+            <?php endif; ?>
+        </script>
 </body>
 
 </html>
