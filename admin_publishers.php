@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $tenNXB, $diaChi);
         if ($stmt->execute()) {
-            header("Location: manage_publishers.php");
+            header("Location: admin_publishers.php");
             exit();
         }
     } elseif ($_POST['action'] == "edit") {
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssi", $tenNXB, $diaChi, $nxbID);
         if ($stmt->execute()) {
-            header("Location: manage_publishers.php");
+            header("Location: admin_publishers.php");
             exit();
         }
         // } elseif ($_POST['action'] == "delete") {
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //     $stmt = $conn->prepare($sql);
         //     $stmt->bind_param("i", $nxbID);
         //     if ($stmt->execute()) {
-        //         header("Location: manage_publishers.php");
+        //         header("Location: admin_publishers.php");
         //         exit();
         //     }
     } elseif ($_POST['action'] == "load") {
@@ -237,19 +237,19 @@ $conn->close();
             <h1>Admin Dashboard</h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
+                    <a class="nav-link" href="admin_orders.php">Quản lý Đơn Hàng</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
+                    <a class="nav-link" href="admin_books.php">Quản lý Sách</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manager_ratings.php">Quản lý Đánh giá</a>
+                    <a class="nav-link" href="admin_ratings.php">Quản lý Đánh giá</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
+                    <a class="nav-link" href="admin_publishers.php">Quản lý Nhà xuất bản</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="logout_admin.php">Đăng xuất</a>
+                    <a class="nav-link" href="admin_logout.php">Đăng xuất</a>
                 </li>
             </ul>
         </div>
@@ -262,13 +262,13 @@ $conn->close();
             <i class="fas fa-home"></i>
         </button>
         <!-- Form tìm kiếm nhà xuất bản -->
-        <form class="form-inline" method="get" action="manage_publishers.php">
+        <form class="form-inline" method="get" action="admin_publishers.php">
             <input class="form-control" type="search" name="search" placeholder="Tìm kiếm nhà xuất bản" aria-label="Search" value="<?php echo htmlspecialchars($searchKeyword); ?>">
             <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
         </form>
 
         <!-- Form thêm hoặc cập nhật nhà xuất bản -->
-        <form class="form-inline mb-4" method="post" action="manage_publishers.php">
+        <form class="form-inline mb-4" method="post" action="admin_publishers.php">
             <input type="hidden" name="action" value="<?php echo $editState ? 'edit' : 'add'; ?>">
             <input type="hidden" name="nxbID" value="<?php echo htmlspecialchars($editPublisher['NXBID']); ?>">
             <input type="text" class="form-control" name="tenNXB" placeholder="Tên Nhà Xuất Bản" value="<?php echo htmlspecialchars($editPublisher['TenNXB']); ?>" required>

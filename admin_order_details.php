@@ -126,7 +126,7 @@ $products = $stmt->get_result();
                 </tbody>
             </table>
         </div>
-        <a href="manage_orders.php" class="btn btn-primary">Quay lại danh sách đơn hàng</a>
+        <a href="admin_orders.php" class="btn btn-primary">Quay lại danh sách đơn hàng</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

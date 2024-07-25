@@ -3,7 +3,7 @@ session_start();
 include 'db_connect.php'; // Ensure the database connection is included
 
 if (!isset($_SESSION['userid'])) {
-    header("Location: login.php"); // Redirect if the user is not logged in
+    header("Location: user_login.php"); // Redirect if the user is not logged in
     exit;
 }
 
@@ -204,7 +204,7 @@ $result = $stmt->get_result();
                     updateCartTotal();
 
                     // Cập nhật số lượng trong giỏ hàng qua AJAX
-                    fetch('update_cart.php', {
+                    fetch('user_cart_update.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -238,7 +238,7 @@ $result = $stmt->get_result();
 
             // Xóa mục giỏ hàng
             function deleteItem(sachID) {
-                fetch('update_cart.php', {
+                fetch('user_cart_update.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -256,7 +256,7 @@ $result = $stmt->get_result();
         });
 
         function checkout() {
-            window.location.href = 'checkout.php';
+            window.location.href = 'user_cart_checkout.php';
         }
     </script>
 </body>

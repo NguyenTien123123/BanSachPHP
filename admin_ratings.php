@@ -19,7 +19,7 @@ if (isset($_POST['action'])) {
             break;
     }
     // Chuyển hướng để tránh re-post khi refresh
-    header("Location: manager_ratings.php?page=$page"); // Maintain the current page number
+    header("Location: admin_ratings.php?page=$page"); // Maintain the current page number
     exit();
 }
 
@@ -264,19 +264,19 @@ $conn->close();
             <h1>Admin Dashboard</h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
+                    <a class="nav-link" href="admin_orders.php">Quản lý Đơn Hàng</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
+                    <a class="nav-link" href="admin_books.php">Quản lý Sách</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manager_ratings.php">Quản lý Đánh giá</a>
+                    <a class="nav-link" href="admin_ratings.php">Quản lý Đánh giá</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
+                    <a class="nav-link" href="admin_publishers.php">Quản lý Nhà xuất bản</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="logout_admin.php">Đăng xuất</a>
+                    <a class="nav-link" href="admin_logout.php">Đăng xuất</a>
                 </li>
             </ul>
         </div>
@@ -320,7 +320,7 @@ $conn->close();
                             <td><?php echo date("d-m-Y", strtotime($row['created_at'])); ?></td>
                             <td><?php echo htmlspecialchars($row['comment']); ?></td>
                             <td>
-                                <form action="manager_ratings.php?page=<?php echo $page; ?>" method="post" class="d-inline">
+                                <form action="admin_ratings.php?page=<?php echo $page; ?>" method="post" class="d-inline">
                                     <input type="hidden" name="ratingID" value="<?php echo htmlspecialchars($row['id_rat']); ?>">
                                     <input type="hidden" name="action" value="update">
                                     <?php if ($row['status'] != 'Approved') : ?>

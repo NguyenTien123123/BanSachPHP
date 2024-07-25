@@ -114,7 +114,7 @@ if (isset($_SESSION['userid'])) {
                         </li>
                     <?php endif; ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="cart.php">
+                        <a class="nav-link" href="user_cart.php">
                             <i class="fa fa-shopping-cart"></i> Giỏ hàng
                             <span class="badge badge-pill badge-danger"><?php echo $cartItemCount; ?></span>
                         </a>
@@ -126,12 +126,12 @@ if (isset($_SESSION['userid'])) {
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
                                 <a class="dropdown-item" href="user_order.php"> Đơn hàng</a>
-                                <a class="dropdown-item" href="profile.php"> Cập nhật thông tin</a>
-                                <a class="dropdown-item" href="changePassword.php"> Đổi mật khẩu</a>
-                                <a class="dropdown-item" href="logout.php">Đăng xuất</a>
+                                <a class="dropdown-item" href="user_profile.php"> Cập nhật thông tin</a>
+                                <a class="dropdown-item" href="user_changePassword.php"> Đổi mật khẩu</a>
+                                <a class="dropdown-item" href="user_logout.php">Đăng xuất</a>
                             </div>
                         <?php else : ?>
-                            <a class="nav-link" href="login.php"><i class="fa fa-user"></i> Đăng nhập/Đăng ký</a>
+                            <a class="nav-link" href="user_login.php"><i class="fa fa-user"></i> Đăng nhập/Đăng ký</a>
                         <?php endif; ?>
                     </li>
                     <li class="nav-item">
@@ -230,7 +230,7 @@ if (isset($_SESSION['userid'])) {
                         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 book-item" data-category="<?= htmlspecialchars($row['TheLoai']) ?>">
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column">
-                                    <a href="book_detail.php?SachID=<?= $sachID ?>" class="card-link">
+                                    <a href="user_book_detail.php?SachID=<?= $sachID ?>" class="card-link">
                                         <img src="<?= htmlspecialchars($row['HinhAnh']) ?>" class="card-img-top" alt="<?= htmlspecialchars($row['TenSach']) ?>">
                                         <h5 class="card-title"><?= htmlspecialchars($row['TenSach']) ?></h5>
                                         <p class="card-text"><?= number_format($row['GiaBan']) ?>đ</p>
@@ -379,7 +379,7 @@ if (isset($_SESSION['userid'])) {
                 var query = $(this).val();
                 if (query.length > 0) {
                     $.ajax({
-                        url: "search_suggestions.php",
+                        url: "user_search_suggestions.php",
                         data: {
                             search: query
                         },
@@ -404,7 +404,7 @@ if (isset($_SESSION['userid'])) {
             $('#notificationsDropdown').on('click', function() {
                 if (isLoggedIn) {
                     $.ajax({
-                        url: 'get_notifications.php',
+                        url: 'user_get_notifications.php',
                         method: 'GET',
                         success: function(data) {
                             $('#notificationContent').html(data);
@@ -417,11 +417,11 @@ if (isset($_SESSION['userid'])) {
         function addToCart(sachID) {
             if (!isLoggedIn) {
                 alert("Bạn cần đăng nhập để sử dụng chức năng này.");
-                window.location.href = 'login.php';
+                window.location.href = 'user_login.php';
                 return;
             }
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "add_to_cart.php", true);
+            xhr.open("POST", "user_book_add_to_cart.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.onload = function() {
                 if (this.status === 200) {

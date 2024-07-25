@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="form-group text-center">
                 <button type="submit" class="btn btn-primary btn-custom btn-block">Đăng ký</button>
-                <button type="button" class="btn btn-secondary btn-custom btn-block" onclick="window.location.href='login.php'">Đăng nhập</button>
+                <button type="button" class="btn btn-secondary btn-custom btn-block" onclick="window.location.href='user_login.php'">Đăng nhập</button>
             </div>
         </form>
     </div>

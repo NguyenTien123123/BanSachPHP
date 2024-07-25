@@ -31,7 +31,7 @@ if (isset($_POST['action'])) {
             }
             $stmt->close();
             // Redirect to avoid re-post on refresh
-            header("Location: manage_orders.php" . (isset($error) ? "?error=" . urlencode($error) : ""));
+            header("Location: admin_orders.php" . (isset($error) ? "?error=" . urlencode($error) : ""));
             exit();
     }
 }
@@ -280,19 +280,19 @@ $totalPages = ceil($totalRows / $limit);
             <h1>Admin Dashboard</h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
+                    <a class="nav-link" href="admin_orders.php">Quản lý Đơn Hàng</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
+                    <a class="nav-link" href="admin_books.php">Quản lý Sách</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manager_ratings.php">Quản lý Đánh giá</a>
+                    <a class="nav-link" href="admin_ratings.php">Quản lý Đánh giá</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
+                    <a class="nav-link" href="admin_publishers.php">Quản lý Nhà xuất bản</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="logout_admin.php">Đăng xuất</a>
+                    <a class="nav-link" href="admin_logout.php">Đăng xuất</a>
                 </li>
             </ul>
         </div>
@@ -341,8 +341,8 @@ $totalPages = ceil($totalRows / $limit);
                                 <td><?php echo isset($row['PhuongThucThanhToan']) ? htmlspecialchars($row['PhuongThucThanhToan']) : 'N/A'; ?></td>
                                 <td><?php echo htmlspecialchars($row['TrangThai']); ?></td>
                                 <td>
-                                    <a href="order_details.php?orderID=<?php echo htmlspecialchars($row['DHID']); ?>" class="btn btn-info btn-sm">Xem Chi Tiết</a>
-                                    <form action="manage_orders.php" method="post" class="d-inline">
+                                    <a href="admin_order_details.php?orderID=<?php echo htmlspecialchars($row['DHID']); ?>" class="btn btn-info btn-sm">Xem Chi Tiết</a>
+                                    <form action="admin_orders.php" method="post" class="d-inline">
                                         <input type="hidden" name="orderID" value="<?php echo htmlspecialchars($row['DHID']); ?>">
                                         <input type="hidden" name="action" value="update">
                                         <select name="status" class="form-control form-control-sm d-inline" style="width: auto;">

@@ -3,7 +3,7 @@ session_start();
 include 'db_connect.php'; // Kết nối cơ sở dữ liệu
 
 if (!isset($_SESSION['userid'])) {
-    header("Location: login.php"); // Chuyển hướng nếu người dùng chưa đăng nhập
+    header("Location: user_login.php"); // Chuyển hướng nếu người dùng chưa đăng nhập
     exit;
 }
 

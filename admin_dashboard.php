@@ -263,16 +263,16 @@ $conn->close();
                     <h1>Admin Dashboard</h1>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_orders.php">Quản lý Đơn Hàng</a>
+                            <a class="nav-link" href="admin_orders.php">Quản lý Đơn Hàng</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_books.php">Quản lý Sách</a>
+                            <a class="nav-link" href="admin_books.php">Quản lý Sách</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manager_ratings.php">Quản lý Đánh giá</a>
+                            <a class="nav-link" href="admin_ratings.php">Quản lý Đánh giá</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
+                            <a class="nav-link" href="admin_publishers.php">Quản lý Nhà xuất bản</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="admin_login.php">Đăng xuất</a>
@@ -286,7 +286,7 @@ $conn->close();
                     <h2>Dashboard</h2>
                 </div>
                 <div class="info-container">
-                    <a href="manage_orders.php" class="info-box">
+                    <a href="admin_orders.php" class="info-box">
                         <div>
                             <h4>Thông tin đơn hàng</h4>
                             <h6>GD đang đợi duyệt: <?php echo $gd_cho_xu_ly; ?></h6>
@@ -294,13 +294,13 @@ $conn->close();
                             <h6>GD thất bại: <?php echo $gd_that_bai; ?></h6>
                         </div>
                     </a>
-                    <a href="manage_books.php" class="info-box">
+                    <a href="admin_books.php" class="info-box">
                         <div>
                             <h4>Thông tin Sách</h4>
                             <h6><?php echo empty($low_stock_books) ? "Không có sách nào sắp hết hàng." : implode(" và ", $low_stock_books); ?></h6>
                         </div>
                     </a>
-                    <a href="manager_ratings.php" class="info-box">
+                    <a href="admin_ratings.php" class="info-box">
                         <div>
                             <h4>Đánh giá</h4>
                             <h6>Tổng số đánh giá: <?php echo $tong_so_danh_gia; ?></h6>
@@ -308,7 +308,7 @@ $conn->close();
                             <h6>Đã đánh giá: <?php echo $da_danh_gia; ?></h6>
                         </div>
                     </a>
-                    <a href="manage_publishers.php" class="info-box">
+                    <a href="admin_publishers.php" class="info-box">
                         <div>
                             <h4>Nhà xuất bản</h4>
                             <h6>Tổng nhà xuất bản: <?php echo $tong_nha_xuat_ban; ?></h6>

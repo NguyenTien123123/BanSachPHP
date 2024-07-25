@@ -13,7 +13,7 @@ function updateQuantity(sachID, increment) {
     document.querySelector(`#subtotal_${sachID}`).textContent = `${newSubtotal.toFixed(2)} VND`;
 
     // Gửi yêu cầu AJAX để cập nhật cơ sở dữ liệu
-    fetch('update_cart.php', {
+    fetch('user_cart_update.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -29,7 +29,7 @@ function updateQuantity(sachID, increment) {
 }
 function deleteItem(sachID) {
     if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) {
-        fetch('update_cart.php', {
+        fetch('user_cart_update.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

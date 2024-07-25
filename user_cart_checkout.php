@@ -3,7 +3,7 @@ session_start();
 include 'db_connect.php';
 
 if (!isset($_SESSION['userid'])) {
-    header("Location: login.php");
+    header("Location: user_login.php");
     exit;
 }
 
@@ -63,7 +63,7 @@ if (isset($_POST['buyNow']) && $_POST['buyNow'] == 'true') {
 
 if (!empty($errors)) {
     $_SESSION['errors'] = $errors;
-    header("Location: cart.php");
+    header("Location: user_cart.php");
     exit;
 }
 
@@ -157,7 +157,7 @@ $conn->close();
 <body>
     <div class="container checkout-container">
         <h1>Thanh Toán</h1>
-        <form id="checkout-form" action="process_checkout.php" method="post">
+        <form id="checkout-form" action="user_cart_process_checkout.php" method="post">
             <div class="form-group">
                 <label for="address">Địa chỉ giao hàng:</label>
                 <input type="text" id="address" name="address" class="form-control" required>

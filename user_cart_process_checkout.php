@@ -3,7 +3,7 @@ session_start();
 include 'db_connect.php';
 
 if (!isset($_SESSION['userid'])) {
-    header("Location: login.php");
+    header("Location: user_login.php");
     exit;
 }
 
@@ -65,7 +65,7 @@ if (isset($_POST['buyNow']) && $_POST['buyNow'] == 'true') {
 
 if (!empty($errors)) {
     $_SESSION['errors'] = $errors;
-    header("Location: cart.php");
+    header("Location: user_cart.php");
     exit;
 }
 
@@ -124,12 +124,12 @@ try {
     $conn->commit();
 
     $_SESSION['success'] = "Đơn hàng của bạn đã được xử lý thành công!";
-    header("Location: thank_you.php"); // Chuyển hướng tới trang cảm ơn
+    header("Location: user_cart_thank_you.php"); // Chuyển hướng tới trang cảm ơn
 } catch (Exception $e) {
     // Rollback giao dịch nếu có lỗi
     $conn->rollback();
     $_SESSION['errors'] = ["Có lỗi xảy ra trong quá trình xử lý đơn hàng. Vui lòng thử lại."];
-    header("Location: cart.php");
+    header("Location: user_cart.php");
 }
 
 $conn->close();

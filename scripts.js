@@ -15,7 +15,7 @@ function showNotification(message, type) {
 
 function addToCart(sachID) {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "add_to_cart.php", true);
+    xhr.open("POST", "user_book_add_to_cart.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onload = function () {
         if (this.status === 200) {
@@ -32,7 +32,7 @@ function addToCart(sachID) {
 
 function requireLogin() {
     alert('Bạn cần đăng nhập để thực hiện chức năng này!');
-    window.location.href = 'login.php';
+    window.location.href = 'user_login.php';
 }
 
 function showCart() {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#notificationsDropdown').on('click', function () {
         if (isLoggedIn) {
             $.ajax({
-                url: 'get_notifications.php',
+                url: 'user_get_notifications.php',
                 method: 'GET',
                 success: function (data) {
                     $('#notificationContent').html(data);

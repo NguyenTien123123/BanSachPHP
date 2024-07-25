@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("sdisssssssis", $tenSach, $giaBan, $soLuong, $moTa, $theLoai, $soTrang, $khoiLuong, $kichThuoc, $tacGia, $dichGia, $nxbID, $targetFilePath);
                 $stmt->execute();
-                header("Location: manage_books.php"); // Redirect
+                header("Location: admin_books.php"); // Redirect
                 exit();
                 break;
 
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("sdisssssssisi", $tenSach, $giaBan, $soLuong, $moTa, $theLoai, $soTrang, $khoiLuong, $kichThuoc, $tacGia, $dichGia, $nxbID, $targetFilePath, $sachID);
                 $stmt->execute();
-                header("Location: manage_books.php"); // Redirect
+                header("Location: admin_books.php"); // Redirect
                 exit();
                 break;
 
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 //     $stmt = $conn->prepare($sql);
                 //     $stmt->bind_param("i", $sachID);
                 //     $stmt->execute();
-                //     header("Location: manage_books.php"); // Redirect
+                //     header("Location: admin_books.php"); // Redirect
                 //     exit();
             case 'delete':
                 $sachID = $_POST['sachID'];
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     echo "Lỗi khi xóa từ sach: " . $stmt->error;
                     exit();
                 }
-                header("Location: manage_books.php");
+                header("Location: admin_books.php");
                 exit();
                 break;
         }
@@ -225,7 +225,7 @@ if (isset($_GET['search'])) {
                 </button>
                 <!-- Form tìm kiếm sách -->
                 <div class="search-bar">
-                    <form class="form-inline" method="get" action="manage_books.php">
+                    <form class="form-inline" method="get" action="admin_books.php">
                         <input class="form-control mr-sm-2" type="search" name="search" placeholder="Tìm kiếm sách" aria-label="Search" value="<?php echo $searchKeyword; ?>">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm kiếm</button>
                     </form>
@@ -236,7 +236,7 @@ if (isset($_GET['search'])) {
                         <?php echo isset($book) ? 'Cập Nhật Sách' : 'Thêm Sách Mới'; ?>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="manage_books.php" enctype="multipart/form-data">
+                        <form method="post" action="admin_books.php" enctype="multipart/form-data">
                             <input type="hidden" name="action" value="<?php echo isset($book) ? 'update' : 'add'; ?>">
                             <input type="hidden" name="sachID" value="<?php echo $book['SachID'] ?? ''; ?>">
 
@@ -355,12 +355,12 @@ if (isset($_GET['search'])) {
                                         <td><?php echo $row['NXBID']; ?></td> <!-- Đổi thành tên NXB nếu cần -->
                                         <td><img src="<?php echo $row['HinhAnh']; ?>" alt="Hình Ảnh"></td>
                                         <td>
-                                            <form action="manage_books.php" method="post" class="d-inline">
+                                            <form action="admin_books.php" method="post" class="d-inline">
                                                 <input type="hidden" name="action" value="edit">
                                                 <input type="hidden" name="sachID" value="<?php echo $row['SachID']; ?>">
                                                 <button type="submit" class="btn btn-warning btn-sm">Sửa</button>
                                             </form>
-                                            <form action="manage_books.php" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sách này?');">
+                                            <form action="admin_books.php" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sách này?');">
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="sachID" value="<?php echo $row['SachID']; ?>">
                                                 <button type="submit" class="btn btn-danger btn-sm">Xóa</button>

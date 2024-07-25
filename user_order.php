@@ -3,7 +3,7 @@ session_start();
 include 'db_connect.php'; // Ensure the database connection is included
 
 if (!isset($_SESSION['userid'])) {
-    header("Location: login.php"); // Redirect if the user is not logged in
+    header("Location: user_login.php"); // Redirect if the user is not logged in
     exit;
 }
 
@@ -258,7 +258,7 @@ $total = $row_total_price['total_price'];
                                     <a href="javascript:void(0);" class="btn btn-primary btn-sm cancel-btn" data-id="<?php echo htmlspecialchars($row['DHID']); ?>">Hủy</a>
                                 <?php endif; ?>
                                 <?php if (trim($row['TrangThai']) === 'Completed') : ?>
-                                    <a href="user_review.php?order_id=<?php echo htmlspecialchars($row['DHID']); ?>" class="btn btn-yellow btn-sm">Đánh giá</a>
+                                    <a href="user_order_review.php?order_id=<?php echo htmlspecialchars($row['DHID']); ?>" class="btn btn-yellow btn-sm">Đánh giá</a>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -303,7 +303,7 @@ $total = $row_total_price['total_price'];
                 var newAddress = $this.closest('tr').find('input').val().trim();
 
                 $.ajax({
-                    url: 'update_order_user.php',
+                    url: 'user_order_update.php',
                     type: 'POST',
                     data: {
                         id: orderID,
@@ -364,7 +364,7 @@ $total = $row_total_price['total_price'];
                 var orderID = $this.data('id');
 
                 $.ajax({
-                    url: 'cancel_order.php',
+                    url: 'user_order_cancel.php',
                     type: 'POST',
                     data: {
                         id: orderID

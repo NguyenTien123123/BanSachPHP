@@ -301,7 +301,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
             <h1>Managers Dashboard</h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="admin_report.php">Thống kê</a>
+                    <a class="nav-link" href="managers_Report.php">Thống kê</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="manage_users.php">Quản lý Người Dùng</a>
@@ -310,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
                     <a class="nav-link" href="manage_accountAdmin.php">Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="login_managers.php">Đăng xuất</a>
+                    <a class="nav-link" href="managers_login.php">Đăng xuất</a>
                 </li>
             </ul>
         </div>

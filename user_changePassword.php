@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $update_stmt->bind_param("ss", $new_password_hashed, $username);
 
                 if ($update_stmt->execute()) {
-                    echo "<script>alert('Đổi mật khẩu thành công.');window.location='login.php';</script>";
+                    echo "<script>alert('Đổi mật khẩu thành công.');window.location='user_login.php';</script>";
                 } else {
                     echo "<script>alert('Lỗi: " . $update_stmt->error . "');</script>";
                 }

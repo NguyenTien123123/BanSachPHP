@@ -3,7 +3,7 @@ session_start();
 include 'db_connect.php'; // Ensure the database connection is included
 
 if (!isset($_SESSION['userid'])) {
-    header("Location: login.php"); // Redirect if the user is not logged in
+    header("Location: user_login.php"); // Redirect if the user is not logged in
     exit;
 }
 
@@ -54,13 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch order details
-$sql_order_details = "SELECT dh.DHID, s.SachID, s.TenSach FROM donhang dh JOIN chitietdonhang ctdh ON ctdh.DHID = dh.DHID JOIN sach s ON s.SachID = ctdh.SachID WHERE dh.DHID = ? AND dh.ID = ? AND dh.TrangThai = 'Completed'";
-$stmt_order_details = $conn->prepare($sql_order_details);
-if ($stmt_order_details) {
-    $stmt_order_details->bind_param("ii", $orderID, $userID);
-    $stmt_order_details->execute();
-    $result_order_details = $stmt_order_details->get_result();
-    $order = $result_order_details->fetch_assoc();
+$sql_admin_order_details = "SELECT dh.DHID, s.SachID, s.TenSach FROM donhang dh JOIN chitietdonhang ctdh ON ctdh.DHID = dh.DHID JOIN sach s ON s.SachID = ctdh.SachID WHERE dh.DHID = ? AND dh.ID = ? AND dh.TrangThai = 'Completed'";
+$stmt_admin_order_details = $conn->prepare($sql_admin_order_details);
+if ($stmt_admin_order_details) {
+    $stmt_admin_order_details->bind_param("ii", $orderID, $userID);
+    $stmt_admin_order_details->execute();
+    $result_admin_order_details = $stmt_admin_order_details->get_result();
+    $order = $result_admin_order_details->fetch_assoc();
 } else {
     die("Lỗi chuẩn bị câu lệnh: " . $conn->error);
 }
@@ -134,7 +134,7 @@ if ($stmt_order_details) {
         ?>
 
         <?php if ($order) : ?>
-            <form action="user_review.php?order_id=<?php echo htmlspecialchars($orderID); ?>" method="POST">
+            <form action="user_order_review.php?order_id=<?php echo htmlspecialchars($orderID); ?>" method="POST">
                 <div class="form-group">
                     <label for="book">Sách:</label>
                     <input type="text" class="form-control" id="book" value="<?php echo htmlspecialchars($order['TenSach']); ?>" disabled>

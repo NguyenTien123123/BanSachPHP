@@ -143,14 +143,14 @@ $average_rating = round($rating_data['avg_rating'], 1);
                 <p><strong>Đánh giá:</strong> <?php echo $average_rating; ?> Sao</p>
 
                 <!-- Form Thêm vào giỏ -->
-                <form id="add-to-cart-form" method="post" action="add_to_cart.php" class="d-inline">
+                <form id="add-to-cart-form" method="post" action="user_book_add_to_cart.php" class="d-inline">
                     <input type="hidden" name="sachID" value="<?php echo $sach['SachID']; ?>">
                     <input type="hidden" name="quantity" value="1">
                     <button type="button" class="btn btn-custom" id="add-to-cart-btn">Thêm vào giỏ</button>
                 </form>
 
                 <!-- Form Mua ngay -->
-                <form id="buy-now-form" action="checkout.php" method="post" class="d-inline">
+                <form id="buy-now-form" action="user_cart_checkout.php" method="post" class="d-inline">
                     <input type="hidden" name="sachID" value="<?php echo $sach['SachID']; ?>">
                     <input type="hidden" name="quantity" value="1">
                     <input type="hidden" name="buyNow" value="true">
@@ -169,7 +169,7 @@ $average_rating = round($rating_data['avg_rating'], 1);
 
                 $.ajax({
                     type: "POST",
-                    url: "add_to_cart.php",
+                    url: "user_book_add_to_cart.php",
                     data: formData,
                     success: function(response) {
                         alert(response);
