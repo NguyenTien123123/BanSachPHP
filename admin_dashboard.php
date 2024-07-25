@@ -275,7 +275,7 @@ $conn->close();
                             <a class="nav-link" href="manage_publishers.php">Quản lý Nhà xuất bản</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="login_managers.php">Đăng xuất</a>
+                            <a class="nav-link" href="admin_login.php">Đăng xuất</a>
                         </li>
                     </ul>
                 </div>
