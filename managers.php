@@ -4,7 +4,7 @@ include 'db_connect.php'; // Kết nối tới CSDL
 
 // Kiểm tra xem admin đã đăng nhập chưa
 if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("Location: login_manager.php");
+    header("Location: managers_login.php");
     exit;
 }
 
